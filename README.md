@@ -2,7 +2,7 @@
 
 <b>Ordination Methods for the Analysis of Beta-Diversity Indices</b>
 
-Beta-diversity indices provide dissimilarity matrices with particular distribution of data requiring specific treatment. For example the high frequency of ties and zero values in turnover indices produces hierarchical cluster dendrograms whose topology and bootstrap supports are affected by the order of rows in the original matrix. Moreover, biogeographical regionalization can be facilitated by a combination of hierarchical clustering and multi-dimensional scaling. The recluster package provides robust techniques to analyze pattern of similarity in species composition.
+The analysis of different aspects of biodiversity requires specific algorithms. For example, in regionalisation analyses, the high frequency of ties and zero values in dissimilarity matrices produced by Beta-diversity turnover produces hierarchical cluster dendrograms whose topology and bootstrap supports are affected by the order of rows in the original matrix. Moreover, visualisation of biogeographical regionalisation can be facilitated by a combination of hierarchical clustering and multi-dimensional scaling. The recluster package provides robust techniques to visualise and analyse pattern of biodiversity and to improve occurrence data for cryptic taxa.
 
 
 <b>Sources:</b>
