@@ -1,0 +1,17 @@
+Package: recluster
+Type: Package
+Title: Ordination Methods for the Analysis of Beta-Diversity Indices
+Version: 3.0
+Date: 2020-07-09
+Depends: ape, rangeBuilder, geosphere
+Imports: vegan, picante, phangorn, phytools, cluster, prevR, plotrix,
+        rgeos, raster, sp
+Author: Leonardo Dapporto, Matteo Ramazzotti, Simone Fattorini, Roger
+        Vila, Gerard Talavera, Roger H.L. Dennis
+Maintainer: Leonardo Dapporto <leondap@gmail.com>
+Description: The analysis of different aspects of biodiversity requires specific algorithms. For example, in regionalisation analyses, the high frequency of ties and zero values in dissimilarity matrices produced by Beta-diversity turnover produces hierarchical cluster dendrograms whose topology and bootstrap supports are affected by the order of rows in the original matrix. Moreover, visualisation of biogeographical regionalisation can be facilitated by a combination of hierarchical clustering and multi-dimensional scaling. The recluster package provides robust techniques to visualise and analyse pattern of biodiversity and to improve occurrence data for cryptic taxa.
+License: GPL (>= 2.0)
+LazyLoad: yes
+URL: https://github.com/leondap/recluster
+NeedsCompilation: no
+Packaged: 2020-07-22 20:05:20 UTC; matteo
