@@ -89,7 +89,7 @@ In a set of highly nested assemblages, as displayed by most island assemblages, 
 the ‘recluster.multi’ function to perform multiscale bootstrap analysis. This function requires the same inputs as ‘recluster.boot’ and a number of different scales to be applied as a multiplier for the species sampled at each step. The results are stored in a matrix providing bootstrap values for each node (rows) for each bootstrap scale (columns). 
 Try with a muliscale bootstrap with 10 levels starting for x1 to x10 level
 ```
-multiboot_bf <- recluster.multi (tree_bf, dataisl, tr=20, boot=100, levels=10, step=1)
+multiboot_bf <- recluster.multi (tree_bf, dataisl, tr=20, method="average", boot=100, levels=10, step=1)
 ```
 The results can be inspected on the tree by indicating whatever pair of levels (1 and 10 in the example)
 ```
@@ -104,7 +104,12 @@ id_bf<-recluster.identify.nodes(multiboot_bf)
 id_bf
 ```
 ![](https://github.com/leondap/images/blob/main/identify.png?raw=true)
+
 The function produces a plot where fast growing nodes are marked in black and slow growing nodes in red. The id_bf$scale value also indicates the best scale to be used to identify the two kinds of nodes. Now the first and the third level bootstrap can be plotted on the tree marking with black and red colours strongly and weakly supported nodes
 
+```
+recluster.plot (tree_bf, multiboot_bf, 1, 3, id=id_bf$nodes)
+```
+![](https://github.com/leondap/images/blob/main/multiscale2.png?raw=true)
 
 
