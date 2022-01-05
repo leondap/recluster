@@ -19,3 +19,18 @@ install.packages("remotes")
 remotes::install_github("leondap/recluster")
 ```
 
+### The zero problem
+
+The dissimilarity indexes of turnover can provide fundamental information in the analysis of beta-diversity patterns but the distance matrices produced on occurrence data show peculiar features:
+
+1) the triangular relationship is rarely met
+2) in case of highly nested pattern, the dissimilarity matrix contains many pairs having zero dissimilarity
+
+We inspect the data of butterflies of Western Mediterranean islands
+
+```
+data(dataisl)
+data(treebut)
+```
+
+
