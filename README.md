@@ -99,7 +99,12 @@ recluster.plot (tree_bf, multiboot_bf, 1, 10)
 
 According to our expectations of two kinds of nodes, some nodes obtained a high values at level = 10, while others did not substantially change. It must be noted that by indefinitely multiplying the number of species, all nodes would attain 100% support at some point. 
 Identifying the two kinds of nodes permits recognition as to which links among areas are actually supported by data, even on the basis of a restricted set of species, and which links are uncertain. The ‘recluster.identify.nodes’ function helps in a proper selection of the parameters to ascertain which nodes belong to each class creating two groups of nodes.
-
+```
+id_bf<-recluster.identify.nodes(multiboot_bf)
+id_bf
+```
+![](https://github.com/leondap/images/blob/main/identify.png?raw=true)
+The function produces a plot where fast growing nodes are marked in black and slow growing nodes in red. The id_bf$scale value also indicates the best scale to be used to identify the two kinds of nodes. Now the first and the third level bootstrap can be plotted on the tree marking with black and red colours strongly and weakly supported nodes
 
 
 
