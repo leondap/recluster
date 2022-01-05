@@ -57,7 +57,8 @@ dataislrnd<-dataisl[sample(1:nrow(dataisl)),]
 simpdiss_rnd <- recluster.dist(dataislrnd)
 plot(hclust(simpdiss_rnd))
 ```
-Two examples here
+Two examples here:
 
 ![](https://github.com/leondap/images/blob/main/cluster%201.png?raw=true)
+![](https://github.com/leondap/images/blob/main/cluster%202.png?raw=true)
 
