@@ -1,8 +1,7 @@
-# recluster
+![This is an image](logo.png)
 
 ## <b>Ordination Methods for the Analysis of Beta-Diversity Indices</b>
 
-![This is an image](logo.png)
 
 The analysis of different aspects of biodiversity requires specific algorithms. For example, in regionalisation analyses, the high frequency of ties and zero values in dissimilarity matrices produced by Beta-diversity turnover produces hierarchical cluster dendrograms whose topology and bootstrap supports are affected by the order of rows in the original matrix. Moreover, visualisation of biogeographical regionalisation can be facilitated by a combination of hierarchical clustering and multi-dimensional scaling. The recluster package provides robust techniques to visualise and analyse pattern of biodiversity and to improve occurrence data for cryptic taxa.
 
