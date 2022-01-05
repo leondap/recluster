@@ -46,5 +46,6 @@ The recluster package includes a function to inspect the fraction of zero and ti
 ```
 recluster.hist(simpdiss_b)
 ```
+![This is an image](https://github.com/leondap/images.git/histogram.png)
 
 
