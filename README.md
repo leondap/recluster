@@ -73,4 +73,5 @@ tree_bf <- recluster.cons (dataisl, p=0.5,method="average")$cons
 plot(tree_bf, direction="downwards")
 ```
 ![](https://github.com/leondap/images/blob/main/consensus%20tree.png?raw=true)
+
 This tree is resistant to changing the order of the row and shows that the internal division among some groups of areas have no meaning
