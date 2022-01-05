@@ -64,6 +64,6 @@ Two random examples here show the possible differences among solutions:
 
 Any biogeographical interpretations based on these spurious relationships might be inconsistent
 
-###To solve this problem, recluster.cons function produces a series of trees after randomly re-ordering the row order, then recluster.cons creates a consensus tree. By replicating these procedure on subsets of species a bootstrap analysis among the consensus trees can be also computed by recluster.boot.
+### To solve this problem, recluster.cons function produces a series of trees after randomly re-ordering the row order, then recluster.cons creates a consensus tree. By replicating these procedure on subsets of species a bootstrap analysis among the consensus trees can be also computed by recluster.boot.
 
 ![](https://github.com/leondap/images/blob/main/flow%20chart.png?raw=true)
