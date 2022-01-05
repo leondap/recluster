@@ -1,4 +1,4 @@
-### recluster
+# recluster
 
 ## <b>Ordination Methods for the Analysis of Beta-Diversity Indices</b>
 
