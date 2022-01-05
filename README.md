@@ -83,7 +83,8 @@ recluster.plot (tree_bf, boot_bf)
 ```
 ![](https://github.com/leondap/images/blob/main/bootstrap.png?raw=true)
 
-Most nodes received weak support when the number of species randomly sampled with replacement was the same as in the original dataset (level =1). In a set of highly nested assemblages, as displayed by most island assemblages, turnover is encompassed by a substantially reduced percentage of species. All bootstrap iterations excluding these species resulted in these islands missing any turnover signal. By applying a multiscale bootstrap, the increase in the number of species randomly selected with repetition can provide greater opportunities for these special taxa to enter the bootstrap matrices, thus increasing the support for these nodes. On the other hand, when a node has a weak (× 1) support because it equally links-up intermediate areas, the increase in the number of species is expected to produce a slower increase in support. 
+Most nodes received weak support when the number of species randomly sampled with replacement was the same as in the original dataset (level =1). 
+In a set of highly nested assemblages, as displayed by most island assemblages, turnover is encompassed by a substantially reduced percentage of species which can univocally link an islands to another area (first case). All bootstrap iterations excluding these species resulted in these islands missing any turnover signal. By applying a multiscale bootstrap, the increase in the number of species randomly selected with repetition can provide greater opportunities for these special taxa to enter the bootstrap matrices, thus increasing the support for these nodes. On the other hand (second case), when a node has a weak (× 1) support because it equally links-up intermediate areas, the increase in the number of species is expected to produce a slower increase in support. 
 
 the ‘recluster.multi’ function to perform multiscale bootstrap analysis. This function requires the same inputs as ‘recluster.boot’ and a number of different scales to be applied as a multiplier for the species sampled at each step. The results are stored in a matrix providing bootstrap values for each node (rows) for each bootstrap scale (columns). 
 Try with a muliscale bootstrap with 10 levels starting for x1 to x10 level
@@ -96,6 +97,9 @@ recluster.plot (tree_bf, multiboot_bf, 1, 10)
 ```
 ![](https://github.com/leondap/images/blob/main/bootstrapmulti.png?raw=true)
 
-A first type of node may accrue a rapid increase of support in a multiscale bootstrap. A second kind of node may eventually receive gradual increase in support. It must be noted that by indefinitely multiplying the number of species, all nodes would attain 100% support at some point. Identifying the two kinds of nodes permits recognition as to which links among areas are actually supported by data, even on the basis of a restricted set of species, and which links are uncertain. The ‘recluster.identify.nodes’ function helps in a proper selection of the parameters to ascertain which nodes belong to each class.
+According to our expectations of two kinds of nodes, some nodes obtained a high values at level = 10, while others did not substantially change. It must be noted that by indefinitely multiplying the number of species, all nodes would attain 100% support at some point. 
+Identifying the two kinds of nodes permits recognition as to which links among areas are actually supported by data, even on the basis of a restricted set of species, and which links are uncertain. The ‘recluster.identify.nodes’ function helps in a proper selection of the parameters to ascertain which nodes belong to each class creating two groups of nodes.
+
+
 
 
