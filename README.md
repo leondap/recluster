@@ -24,7 +24,7 @@ remotes::install_github("leondap/recluster")
 The dissimilarity indexes of turnover can provide fundamental information in the analysis of beta-diversity patterns but the distance matrices produced on occurrence data show peculiar features:
 
 1) the triangular relationship is rarely met
-2) in case of highly nested pattern, the dissimilarity matrix contains many pairs having zero dissimilarity
+2) in case of highly nested pattern, the dissimilarity matrix contains many pairs having zero and tied dissimilarity producing problematic cases in clustering
 
 We inspect the data of butterflies of Western Mediterranean islands
 
@@ -32,6 +32,19 @@ We inspect the data of butterflies of Western Mediterranean islands
 library(recluster)
 data(dataisl)
 data(treebut)
+```
+
+Calculate the Simpson dissimilatity matrix based on occurrence data
+
+```
+simpdiss_b <- recluster.dist(dataisl)
+recluster.hist(simpdiss_b)
+```
+
+The recluster package includes a function to inspect the fraction of zero and tied values
+
+```
+recluster.hist(simpdiss_b)
 ```
 
 
