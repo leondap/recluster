@@ -78,7 +78,16 @@ This tree is resistant to changing the order of the row and shows that the inter
 
 The function ‘recluster.boot’ allows bootstrapping of nodes in the original consensus tree by applying a user- defined number of consensus trees with user-defined numbers of sampled species (level = 1 means same number of the original matrix i.e species number x 1). 
 ```
-boot_bf <- recluster.boot (tree_bf, dataisl, tr=20, boot=100, level=1)
+boot_bf <- recluster.boot (tree_bf, dataisl, tr=20, method="average", boot=100, level=1)
 recluster.plot (tree_bf, boot_bf)
 ```
 ![](https://github.com/leondap/images/blob/main/bootstrap.png?raw=true)
+
+Most nodes received weak support when the number of species randomly sampled with replacement was the same as in the original dataset (level =1). In a set of highly nested assemblages, as displayed by most island assemblages, turnover is encompassed by a substantially reduced percentage of species. All bootstrap iterations excluding these species resulted in these islands missing any turnover signal. By applying a multiscale bootstrap, the increase in the number of species randomly selected with repetition can provide greater opportunities for these special taxa to enter the bootstrap matrices, thus increasing the support for these nodes. On the other hand, when a node has a weak (× 1) support because it equally links-up intermediate areas, the increase in the number of species is expected to produce a slower increase in support. 
+
+the ‘recluster.multi’ function to perform multiscale bootstrap analysis. This function requires the same inputs as ‘recluster.boot’ and a number of different scales to be applied as a multiplier for the species sampled at each step. The results are stored in a matrix providing bootstrap values for each node (rows) for each bootstrap scale (columns). 
+Try with a muliscale bootstrap with 10 levels starting for x1 to x10 level
+```
+multiboot_bf <- recluster.multi (tree_bf, dataisl, tr=20, boot=100, levels=10, step=1)
+```
+A first type of node may accrue a rapid increase of support in a multiscale bootstrap. A second kind of node may eventually receive gradual increase in support. It must be noted that by indefinitely multiplying the number of species, all nodes would attain 100% support at some point. Identifying the two kinds of nodes permits recognition as to which links among areas are actually supported by data, even on the basis of a restricted set of species, and which links are uncertain. The ‘recluster.identify.nodes’ function helps in a proper selection of the parameters to ascertain which nodes belong to each class.
