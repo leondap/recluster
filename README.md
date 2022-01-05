@@ -1,4 +1,4 @@
-![This is an image](logo.png)
+![](logo.png)
 
 ## <b>Ordination Methods for the Analysis of Beta-Diversity Indices</b>
 
