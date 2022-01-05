@@ -90,10 +90,11 @@ Try with a muliscale bootstrap with 10 levels starting for x1 to x10 level
 ```
 multiboot_bf <- recluster.multi (tree_bf, dataisl, tr=20, boot=100, levels=10, step=1)
 ```
-The results can be inspected on the tree by indicating whatever pair of levels (1, 10 in the example)
+The results can be inspected on the tree by indicating whatever pair of levels (1 and 10 in the example)
 ```
 recluster.plot (tree_bf, multiboot_bf, 1, 10)
 ```
+![](https://github.com/leondap/images/blob/main/bootstrapmulti.png?raw=true)
 
 A first type of node may accrue a rapid increase of support in a multiscale bootstrap. A second kind of node may eventually receive gradual increase in support. It must be noted that by indefinitely multiplying the number of species, all nodes would attain 100% support at some point. Identifying the two kinds of nodes permits recognition as to which links among areas are actually supported by data, even on the basis of a restricted set of species, and which links are uncertain. The ‘recluster.identify.nodes’ function helps in a proper selection of the parameters to ascertain which nodes belong to each class.
 
