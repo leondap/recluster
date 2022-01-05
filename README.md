@@ -75,3 +75,9 @@ plot(tree_bf, direction="downwards")
 ![](https://github.com/leondap/images/blob/main/consensus%20tree.png?raw=true)
 
 This tree is resistant to changing the order of the row and shows that the internal division among some groups of areas have no meaning
+
+The function ‘recluster.boot’ allows bootstrapping of nodes in the original consensus tree by applying a user- defined number of consensus trees with user-defined numbers of sampled species.
+```
+boot_bf <- recluster.boot (tree_bf, dataisl, tr=20, boot=100, level=1)
+recluster.plot (tree_bf, boot_bf)
+```
