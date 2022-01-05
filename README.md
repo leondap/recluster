@@ -29,6 +29,7 @@ The dissimilarity indexes of turnover can provide fundamental information in the
 We inspect the data of butterflies of Western Mediterranean islands
 
 ```
+library(recluster)
 data(dataisl)
 data(treebut)
 ```
