@@ -48,4 +48,4 @@ recluster.hist(simpdiss_b)
 ```
 ![](https://github.com/leondap/images/blob/main/histogram.png?raw=true)
 
-
+So there are 27 tied 0 values and no other tied cells. This potentially creates problems in hierarchical clustering because at the first step the algorithm has to choose between several minimum dissimilarity to create the first link 
