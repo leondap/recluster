@@ -115,6 +115,9 @@ recluster.plot (tree_bf, multiboot_bf, 1, 3, id=id_bf$nodes)
 ### Making maps for zooregionalisation
 
 First open the dataset from a previous paper (Dapporto et al 2014)
+```
+databut <- read.csv("https://raw.githubusercontent.com/leondap/files/main/jbi12315-sup.csv")
+```
 [UNDER CONSTRUCTION]
 
 
