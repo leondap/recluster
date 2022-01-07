@@ -129,6 +129,12 @@ rownames(databut)<-names
 head(databut)
 ```
 
+make the recluster.cons tree
+```
+tree_simp<-recluster.cons(databut,dist="simpson",tr=100)
+plot(tree_simp$cons, direction="downwards",cex=0.5)
+```
+
 [UNDER CONSTRUCTION]
 
 
