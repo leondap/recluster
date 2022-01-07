@@ -158,6 +158,11 @@ $nclust
 
 Explaining that the fourth cut (creating 7 clusters due to polytomies) explains more than 93% of dissimilairity and that successive cuts only slightly increase this value
 
+At this stage the hierarchical cluster procedure can be paired with Principal Coordinates Analysis.  We used the cmdscale function. 
+
+```
+mds_simp<-cmdscale(dist_simp)
+```
 
 
 References
