@@ -135,7 +135,27 @@ tree_simp<-recluster.cons(databut,dist="simpson",tr=100)
 plot(tree_simp$cons, direction="downwards",cex=0.5)
 ```
 
-[UNDER CONSTRUCTION]
+Now we have to decide which cut to apply to identify the regions. According to Holt et al (2013) recognition of regions can be facilitated by identifying a cut in the tree explaining at least 90% of the dissimilarity. To do this it is enough to compute the ratio between the sum of cell values representing distances among sites belonging to different clusters and the sum of all the values included in the dissimilarity matrix. The function recluster.expl.diss computes this value for all possible cuts of a dendrogram.
+
+```
+dist_simp<-recluster.dist(databut)
+expl_diss<-recluster.expl.diss(tree_simp$cons, dist_simp)
+expl_diss
+```
+which returns:
+$expl.div
+ [1] 0.5504787 0.7565929 0.7917113 0.9346985 0.9362333
+ [6] 0.9392667 0.9435704 0.9497930 0.9510247 0.9519164
+[11] 0.9562086 0.9564770 0.9567438 0.9947000 0.9951365
+[16] 0.9953260 0.9954201 0.9958837 0.9960366 0.9960955
+[21] 0.9976041 0.9976570 0.9984160 0.9984552 0.9984908
+[26] 0.9985263 0.9997911 0.9999752 1.0000000
+
+$nclust
+ [1]  2  3  4  7  8 10 11 12 13 15 16 17 18 37 38 40 41 43
+[19] 44 45 51 52 57 58 59 60 69 71 72
+
+Explaining that the fourth cut (creating 7 clusters due to polytomies) explains more than 93% of dissimilairity and that successive cuts only slightly increase this value
 
 
 
