@@ -118,6 +118,17 @@ First open the dataset from a previous paper (Dapporto et al 2014)
 ```
 databut <- read.csv("https://raw.githubusercontent.com/leondap/files/main/jbi12315-sup.csv")
 ```
+Extraxct the information and retain data on butterfly occurrence only
+```
+latitude<-databut[,6]
+longitude<-databut[,7]
+richness<-databut[,5]
+names<-databut[,3]
+databut<-databut[,8:ncol(databut)]
+rownames(databut)<-names
+head(databut)
+```
+
 [UNDER CONSTRUCTION]
 
 
