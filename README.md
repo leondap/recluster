@@ -112,4 +112,15 @@ recluster.plot (tree_bf, multiboot_bf, 1, 3, id=id_bf$nodes)
 ```
 ![](https://github.com/leondap/images/blob/main/multiscale2.png?raw=true)
 
+### Making maps for zooregionalisation
+
+First open the dataset from a previous paper (Dapporto et al 2014)
+```
+library(RCurl)
+x <- getURL("https://github.com/leondap/files/blob/main/jbi12315-sup.csv")
+databut <- read.csv(text = x)
+```
+
+
+References
 
