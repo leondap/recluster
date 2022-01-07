@@ -143,6 +143,7 @@ expl_diss<-recluster.expl.diss(tree_simp$cons, dist_simp)
 expl_diss
 ```
 which returns:
+
 $expl.div
  [1] 0.5504787 0.7565929 0.7917113 0.9346985 0.9362333
  [6] 0.9392667 0.9435704 0.9497930 0.9510247 0.9519164
