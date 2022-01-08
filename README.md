@@ -198,6 +198,8 @@ Where the relationships among areas appear very clear in a sight.
 
 ### Zooregionalisation at mid-small scale using geographic cells
 
+[Under construction]
+
 
 
 References
