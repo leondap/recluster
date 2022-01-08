@@ -197,12 +197,23 @@ plot(map, add=T)
 Where the relationships among areas appear very clear in a sight.
 
 ### Zooregionalisation at mid-small scale using geographic cells
+When spatial units are close to one another and not separated by conspicuous barriers (like sea straits or mountain chains) the existence of many tied values, especially zero value, affects the possibility to create  dendrograms even by the recluster.cons algorithm because equivalent solutions are significantly different from one another and in practice makes impossible to obtain any reliable 50% consensus among trees
+
+https://methodsblog.com/2016/08/11/biogeographic-regions/
+
+The recluster.region algorithm overcomes the row-order bias and the restrictive 50% consensus rule.
+The example is based on a dataset of British butterflies provided in the original paper describing recluster.region (Dapporto et al. 2015)
+
+data <- read.csv("https://raw.githubusercontent.com/leondap/files/main/mee312415-sup-0005-2001-9-selected.csv")
 
 [Under construction]
 
 
 
 References
+
+
+Dapporto, L., Ciolli, G., Dennis, R. L., Fox, R., & Shreeve, T. G. (2015). A new procedure for extrapolating turnover regionalization at mid‐small spatial scales, tested on British butterflies. Methods in Ecology and Evolution, 6(11), 1287-1297.
 
 Holt, B.G., Lessard, J.-P., Borregaard, M.K., Fritz S.A., Araújo, M.B., Dimitrov, D., Fabre, P.-H. Graham, C.H., Graves, G.R., Jønsson, K.A., Nogués-Bravo, D., Wang Z., Whittaker, R.J., Fjeldså, J. & Rahbek, C. (2013) An update of Wallace’s zoogeographic regions of the world Science, 339, 74–78.
 
