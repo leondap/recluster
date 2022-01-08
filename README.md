@@ -145,8 +145,8 @@ dist_simp<-recluster.dist(databut)
 expl_diss<-recluster.expl.diss(tree_simp$cons, dist_simp)
 expl_diss
 ```
-which returns:
-
+which returns a large matrix expl_diss$matrix representing cluster attribution of area for each cut and two vectors $expl.div and $nclust including the explained dissimilarity at each cut and teh number of resulting clusters, respectively:
+```
 $expl.div
  [1] 0.5504787 0.7565929 0.7917113 0.9346985 0.9362333
  [6] 0.9392667 0.9435704 0.9497930 0.9510247 0.9519164
@@ -159,6 +159,7 @@ $nclust
  [1]  2  3  4  7  8 10 11 12 13 15 16 17 18 37 38 40 41 43
 [19] 44 45 51 52 57 58 59 60 69 71 72
 
+```
 Explaining that the fourth cut (creating 7 clusters due to polytomies) explains more than 93% of dissimilairity and that successive cuts only slightly increase this value
 
 At this stage the hierarchical cluster procedure can be paired with Principal Coordinates Analysis.  We used the cmdscale function. 
@@ -167,11 +168,12 @@ At this stage the hierarchical cluster procedure can be paired with Principal Co
 pcoa_simp<-cmdscale(dist_simp)
 ```
 
-According to Kreft & Jetz (2010), the two-dimensional configuration from PCoA can be plotted into a two-dimensional space, where the four corners are represented by the colours pure red, yellow, green and blue. The position of each area in this space can be represented by a combination of RGB colours. The function recluster.col projects a two-dimensional configuration into a new RGB space. 
-
-colours_simp<-recluster.col(pcoa_simp)
-colours_sor
-
+According to Kreft & Jetz (2010), the two-dimensional configuration from PCoA can be plotted into a two-dimensional space, where the four corners are represented by the colours pure red, yellow, green and blue. The position of each area in this space can be represented by a combination of RGB colours. The function recluster.col projects a two-dimensional configuration into a new RGB space. The flag st=F permits to maintain PCoA axes in the same unit of the original dissimilarity matrix (e.g. turnover dissimilarity)
+```
+colours_simp<-recluster.col(pcoa_simp, st=F)
+recluster.plot.col(colours_simp, cex=1.5, cext=0.6)
+```
+![](https://github.com/leondap/images/blob/main/recluster.plot.col.png?raw=true)
 
 References
 
