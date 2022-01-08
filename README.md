@@ -134,6 +134,9 @@ make the recluster.cons tree
 tree_simp<-recluster.cons(databut,dist="simpson",tr=100)
 plot(tree_simp$cons, direction="downwards",cex=0.5)
 ```
+![](https://github.com/leondap/images/blob/main/cluster_but.png?raw=true)
+
+The presence of several polytomies indicates the need for the recluster.cons producere instead of a typical hierarchical clustering
 
 Now we have to decide which cut to apply to identify the regions. According to Holt et al (2013) recognition of regions can be facilitated by identifying a cut in the tree explaining at least 90% of the dissimilarity. To do this it is enough to compute the ratio between the sum of cell values representing distances among sites belonging to different clusters and the sum of all the values included in the dissimilarity matrix. The function recluster.expl.diss computes this value for all possible cuts of a dendrogram.
 
@@ -161,8 +164,13 @@ Explaining that the fourth cut (creating 7 clusters due to polytomies) explains 
 At this stage the hierarchical cluster procedure can be paired with Principal Coordinates Analysis.  We used the cmdscale function. 
 
 ```
-mds_simp<-cmdscale(dist_simp)
+pcoa_simp<-cmdscale(dist_simp)
 ```
+
+According to Kreft & Jetz (2010), the two-dimensional configuration from PCoA can be plotted into a two-dimensional space, where the four corners are represented by the colours pure red, yellow, green and blue. The position of each area in this space can be represented by a combination of RGB colours. The function recluster.col projects a two-dimensional configuration into a new RGB space. 
+
+colours_simp<-recluster.col(pcoa_simp)
+colours_sor
 
 
 References
