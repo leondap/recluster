@@ -189,10 +189,12 @@ Now the areas with their colours can be plotted in a map by using recluster.plot
 library(rworldmap)
 library(rworldxtra)
 map <- getMap(resolution = "high")
-recluster.plot.pie(longitude,latitude,mat=new_colours_sim$all,square=0.001,minsize=0.3)
+recluster.plot.pie(longitude,latitude,mat=new_colours_sim$all,square=0.001,minsize=0.3,xlab="Longitude", ylab="Latitude")
 plot(map, add=T)
 ```
 ![](https://github.com/leondap/images/blob/main/map%20final.png?raw=true)
+
+
 References
 
 Holt, B.G., Lessard, J.-P., Borregaard, M.K., Fritz S.A., Araújo, M.B., Dimitrov, D., Fabre, P.-H. Graham, C.H., Graves, G.R., Jønsson, K.A., Nogués-Bravo, D., Wang Z., Whittaker, R.J., Fjeldså, J. & Rahbek, C. (2013) An update of Wallace’s zoogeographic regions of the world Science, 339, 74–78.
