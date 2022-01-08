@@ -147,20 +147,18 @@ expl_diss
 ```
 which returns a large matrix expl_diss$matrix representing cluster attribution of area for each cut and two vectors $expl.div and $nclust including the explained dissimilarity at each cut and teh number of resulting clusters, respectively:
 ```
+
 $expl.div
- [1] 0.5504787 0.7565929 0.7917113 0.9346985 0.9362333
- [6] 0.9392667 0.9435704 0.9497930 0.9510247 0.9519164
-[11] 0.9562086 0.9564770 0.9567438 0.9947000 0.9951365
-[16] 0.9953260 0.9954201 0.9958837 0.9960366 0.9960955
-[21] 0.9976041 0.9976570 0.9984160 0.9984552 0.9984908
-[26] 0.9985263 0.9997911 0.9999752 1.0000000
+ [1] 0.5504787 0.7565929 0.7917113 0.8400110 0.8659223 0.8674571 0.9362333 0.9392667 0.9435704 0.9497930 0.9510247
+[12] 0.9519164 0.9521848 0.9524516 0.9887708 0.9938220 0.9942584 0.9944479 0.9945420 0.9950057 0.9951586 0.9952174
+[23] 0.9967261 0.9967790 0.9984160 0.9984552 0.9984908 0.9985263 0.9997911 0.9999752 1.0000000
 
 $nclust
- [1]  2  3  4  7  8 10 11 12 13 15 16 17 18 37 38 40 41 43
-[19] 44 45 51 52 57 58 59 60 69 71 72
+ [1]  2  3  4  5  6  7  8 10 11 12 13 15 16 17 29 35 36 38 39 42 43 44 50 51 58 59 60 61 70 72 73
+
 
 ```
-Explaining that the fourth cut (creating 7 clusters due to polytomies) explains more than 93% of dissimilairity and that successive cuts only slightly increase this value
+Explaining that the seventh cut (creating 8 clusters) explains more than 93% of dissimilairity and that successive cuts only slightly increase this value
 
 At this stage the hierarchical cluster procedure can be paired with Principal Coordinates Analysis.  We used the cmdscale function. 
 
@@ -175,5 +173,29 @@ recluster.plot.col(colours_simp, cex=1.5, cext=0.6)
 ```
 ![](https://github.com/leondap/images/blob/main/recluster.plot.col.png?raw=true)
 
+Kreft & Jetz (2010) and Holt et al. (2013) aggregated sites in the colour space according to the results obtained by cluster analysis by computing mean coordinates for sites belonging to the same group. This is made with the recluster.group.col function, requiring a table as obtained by the recluster.col function and a vector describing group membership for each case. This vector can be obtained directly from the table provided by recluster.expl.diss$matrix by selecting the column corresponding to the selected cut. In our case the first cut producing >90% of explained dissimilarity is #4. So the group membership is obtain as:
+```
+membership<-expl_diss$matrix[,7]
+```
+and the colours for teh resulting clusters as:
+```
+new_colours_sim<-recluster.group.col (colours_simp,membership)
+recluster.plot.col(new_colours_sim$aggr,text=F,cex=2)
+```
+![](https://github.com/leondap/images/blob/main/recluster.plot.aggr.png?raw=true)
+
+Now the areas with their colours can be plotted in a map by using recluster.plot.pie function together with a map. The very low square value avoid that areas are merged in pies.
+```
+library(rworldmap)
+library(rworldxtra)
+map <- getMap(resolution = "high")
+recluster.plot.pie(longitude,latitude,mat=new_colours_sim$all,square=0.001,minsize=0.3)
+plot(map, add=T)
+```
+![](https://github.com/leondap/images/blob/main/map%20final.png?raw=true)
 References
+
+Holt, B.G., Lessard, J.-P., Borregaard, M.K., Fritz S.A., Araújo, M.B., Dimitrov, D., Fabre, P.-H. Graham, C.H., Graves, G.R., Jønsson, K.A., Nogués-Bravo, D., Wang Z., Whittaker, R.J., Fjeldså, J. & Rahbek, C. (2013) An update of Wallace’s zoogeographic regions of the world Science, 339, 74–78.
+
+Kreft, H. & Jetz, W. (2010) A framework for delineating biogeographic regions based on species distributions. Journal of Biogeography, 37, 2029–2053.
 
