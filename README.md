@@ -194,6 +194,11 @@ plot(map, add=T)
 ```
 ![](https://github.com/leondap/images/blob/main/map%20final%203.png?raw=true)
 
+Where the relationships among areas appear very clear in a sight.
+
+### Zooregionalisation at mid-small scale using geographic cells
+
+
 
 References
 
