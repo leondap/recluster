@@ -192,7 +192,7 @@ map <- getMap(resolution = "high")
 recluster.plot.pie(longitude,latitude,mat=new_colours_sim$all,square=0.001,minsize=0.3,xlab="Longitude", ylab="Latitude")
 plot(map, add=T)
 ```
-![](https://github.com/leondap/images/blob/main/map%20final.png?raw=true)
+![](https://github.com/leondap/images/blob/main/map%20final%203.png?raw=true)
 
 
 References
