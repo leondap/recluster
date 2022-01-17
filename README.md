@@ -239,7 +239,7 @@ Compute cluster colours and plot the solution
 grp<-recluster.group.col(rgbcol,solution$grouping[,clusters-1])
 plot(coordin[,1], coordin[,2],  col = rgb(grp$all[, 3], grp$all[,4], grp$all[, 5], maxColorValue = 255), cex = 0.7, pch=15)
 ```
-
+![](https://github.com/leondap/images/blob/main/region4x.png?raw=true)
 
 References
 
