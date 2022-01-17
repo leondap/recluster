@@ -241,6 +241,12 @@ plot(coordin[,1], coordin[,2],  col = rgb(grp$all[, 3], grp$all[,4], grp$all[, 5
 ```
 ![](https://github.com/leondap/images/blob/main/region4x.png?raw=true)
 
+To enhance contrasts among colours to a maximum variability by keeping the relative poisition of cluster it is enough to compute a new recluster.col
+```
+newcol<-recluster.col(grp$all[,1:2])
+plot(coordin[,1], coordin[,2],  col = rgb(newcol[, 3], newcol[,4], newcol[, 5], maxColorValue = 255), cex = 0.7, pch=15)
+```
+![](https://github.com/leondap/images/blob/main/region4xcolours.png?raw=true)
 References
 
 
