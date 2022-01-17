@@ -203,11 +203,19 @@ https://methodsblog.com/2016/08/11/biogeographic-regions/
 
 The recluster.region algorithm overcomes the row-order bias and the restrictive 50% consensus rule.
 The example is based on a dataset of British butterflies provided in the original paper describing recluster.region (Dapporto et al. 2015)
-
+```
 data <- read.csv("https://raw.githubusercontent.com/leondap/files/main/mee312415-sup-0005-2001-9-selected.csv")
-
-[Under construction]
-
+```
+Extract coordinates and occurrence data
+```
+coordin<-data[,3:4]
+table_09<-data[,5:ncol(data)]
+```
+Compute the Simpson dissimilarity index and inspect its values
+```
+simpson<-recluster.dist(table_09)
+recluster.hist(simpson)
+```
 
 
 References
