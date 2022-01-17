@@ -226,6 +226,11 @@ recluster.plot.col(rgbcol)
 ```
 ![](https://github.com/leondap/images/blob/main/RGBregion.png?raw=true)
 
+Perform the recluster.region analysis using the Ward method with a number of cluster solutions ranging from 2 (minclust=2) and 4 (maxcl=4), based on 100 random trees 
+```
+solution<-recluster.region(simpson,method="ward.D",tr=100,mincl=2,maxcl=4)
+```
+
 References
 
 
