@@ -211,13 +211,17 @@ Extract coordinates and occurrence data
 coordin<-data[,3:4]
 table_09<-data[,5:ncol(data)]
 ```
-Compute the Simpson dissimilarity index and inspect its values
+Compute the Simpson dissimilarity index and inspect its values showing a high incidence of zero values
 ```
 simpson<-recluster.dist(table_09)
 recluster.hist(simpson)
 ```
-
-
+Compute the PCoA on dissimilarities and project the configuration in RGB space
+```
+pcoa<-cmdscale(simpson)
+rgbcol<-recluster.col(pcoa)
+recluster.plot.col(rgbcol)
+```
 References
 
 
