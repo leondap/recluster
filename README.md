@@ -216,12 +216,16 @@ Compute the Simpson dissimilarity index and inspect its values showing a high in
 simpson<-recluster.dist(table_09)
 recluster.hist(simpson)
 ```
+[!](https://github.com/leondap/images/blob/main/recluster.hist.region.png?raw=true)
+
 Compute the PCoA on dissimilarities and project the configuration in RGB space
 ```
 pcoa<-cmdscale(simpson)
 rgbcol<-recluster.col(pcoa)
 recluster.plot.col(rgbcol)
 ```
+[!](https://github.com/leondap/images/blob/main/RGBregion.png?raw=true)
+
 References
 
 
