@@ -247,6 +247,8 @@ newcol<-recluster.col(grp$all[,1:2])
 plot(coordin[,1], coordin[,2],  col = rgb(newcol[, 3], newcol[,4], newcol[, 5], maxColorValue = 255), cex = 0.7, pch=15)
 ```
 ![](https://github.com/leondap/images/blob/main/region4xcolours.png?raw=true)
+
+
 References
 
 
