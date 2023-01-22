@@ -11,7 +11,7 @@ recluster.fst<-function(dist,vect,setzero=F,setnazero=F){
 	res$lengthHs<-length(vectmat[which(omol==0)])
 	Hs<-mean(vectmat[which(omol==0)],na.rm=T)
 	Hinter<-mean(vectmat[which(omol==1)],na.rm=T)
-	res$inter<-Hinter
+	res$Hinter<-Hinter
 	res$Hs<-Hs
 	res$Gst<-((Ht-Hs)/(Ht))
 	res$G1st<-((Ht-Hs)/(Ht))/(((spec-1)*(1-Hs))/(spec-1+Hs))
