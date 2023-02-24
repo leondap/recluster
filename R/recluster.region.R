@@ -44,7 +44,7 @@ recluster.region<-function(mat,tr=50,dist="simpson",method="ward.D2",phylo=NULL,
         if(retmat){res$matrices<-matrices}
         pamsol<-matrix(data=NA, nrow=rows,ncol=clusters)
         colnames(pamsol)<-c(mincl:maxcl)
-        rownames(pamsol)<-rownames(mat)
+        rownames(pamsol)<-rownames(mat2)
         res$solutions<-matrix(data=NA, nrow=clusters,ncol=3)
         colnames(res$solutions)<-c("k","silh","ex.diss")
         res$solutions[,1]<-c(mincl:maxcl)
