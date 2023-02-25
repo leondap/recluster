@@ -1,4 +1,4 @@
-recluster.region<-function(mat,tr=50,dist="simpson",method="ward.D2",phylo=NULL, mincl=2,maxcl=3,rettree=FALSE,retmat=FALSE,retmemb=FALSE){
+recluster.region<-function(mat,tr=50,dist="simpson",method="ward.D2",phylo=NULL, members=NULL, mincl=2,maxcl=3,rettree=FALSE,retmat=FALSE,retmemb=FALSE){
         res<-NULL       
         clusters<-maxcl-mincl+1
         mat2<-as.matrix(mat)    
@@ -53,7 +53,7 @@ recluster.region<-function(mat,tr=50,dist="simpson",method="ward.D2",phylo=NULL,
                           else{
                                    if (method=="diana"){
                                               pami<-diana(as.dist(matrices[,,pamr]))}else{
-                                              pami<-hclust(as.dist(matrices[,,pamr]),method=method)}
+                                              pami<-hclust(as.dist(matrices[,,pamr]),method=method, members=members)}
                                   pamsol[,pamr]<-cutree(pami,k=mincl-1+pamr)
                                   if(rettree){res$tree[[pamr]]<-pami}                                                                    
                  }
