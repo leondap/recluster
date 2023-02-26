@@ -16,7 +16,7 @@ recluster.region<-function(mat,tr=50,dist="simpson",method="ward.D2",phylo=NULL,
                 if(method=="pam"){
                                   tree<-NULL}else{
                                   if (method=="diana"){tree<-diana(as.dist(dista2))}else
-                                                      {tree<-hclust(as.dist(dista2),method=method)}
+                                                      {tree<-hclust(as.dist(dista2),method=method, members=members)}
                                   }
                 for (cut in mincl:maxcl){
                                   if(method=="pam"){
