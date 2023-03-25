@@ -1,5 +1,5 @@
 export ("ah2sf","recluster.boot","recluster.cons","recluster.dist","recluster.multi","recluster.plot","recluster.hist","recluster.node.strength","recluster.identify.nodes","recluster.col","recluster.plot.col","recluster.plot.sites.col","recluster.plot.matrix","recluster.expl.diss","recluster.expl","recluster.line", "recluster.plot.pie", "recluster.procrustes","recluster.region","recluster.rotate","recluster.test.dist","recluster.group.col","recluster.fst","recluster.fst.pair","biodecrypt","biodecrypt.cross","biodecrypt.wrap","biodecrypt.view","biodecrypt.optimise","biodecrypt.plot")
-import("ape", "geosphere","prevR","sp","vegan", "alphahull")
+import("ape", "geosphere","prevR","sp","vegan", "alphahull", "sf")
 importFrom("grDevices", "col2rgb", "grey", "rgb")
 importFrom("graphics", "hist", "lines", "points", "rect")
 importFrom("stats", "aggregate", "as.dist", "cmdscale","complete.cases", "cutree", "dist", "hclust", "lm","median", "reorder")
