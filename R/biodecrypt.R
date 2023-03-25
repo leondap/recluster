@@ -185,7 +185,7 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon=N
     intersect <- matrix(NA, taxa, taxa)
     sympatry <- intersect
     for (k in 1:(taxa - 1)) {
-        for (c in 2:taxa) {
+        for (c in (k+1):taxa) {
 		tryintersect<-try(raster::intersect(hulls[[k]], hulls[[c]]),silent = TRUE)
 		if(inherits(tryintersect, 'try-error')){
 			intersect[k, c] <- 0
