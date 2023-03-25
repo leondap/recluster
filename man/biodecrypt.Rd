@@ -5,14 +5,11 @@ An algorithm to attribute unidentified occurrence data based on a subset of iden
 records
 }
 \description{
-biodecrypt uses the function getDynamicAlphaHull of the rangeBuilder R package 
-(https://github.com/ptitle/rangeBuilder, accessed 2020/02/05) to construct concave 
-hulls. This function supports an initial alpha value which is increased until a given 
-fraction of samples are included in the resulting hulls (default 95%) and a maximum 
-number of partition if satistified (default 10). This function can also remove sea or 
-ground areas from the polygons when terrestrial or aquatic organisms, respectively, 
-are under study. The main input is represented by: i) a matrix of longitude and 
-latitude for all occurrence records, ii) a vector indicating species membership of 
+biodecrypt uses the function ahull from package alphahull to construct concave 
+hulls with custom concavity (alpha) for each taxon. This function can also remove sea or 
+ground areas from the analysis based on a SpatialPolygonsDataFrame representing the area of interest. 
+The main input is represented by: i) a matrix of longitude and 
+latitude (decimal degrees of longitude and latitude, WGS84) for all occurrence records, ii) a vector indicating species membership of 
 each record in the same order of the matrix (1,2..n for known species and 0 for cases 
 to be attributed). By using spatial coordinates, the list of identified records and 
 alpha values, biodecrypt computes a concave hull for each species based on known 
@@ -21,9 +18,8 @@ species based on the comparison of hull localtion, geometry and the location of
 occurrence data (see details). 
 }
 \usage{
-biodecrypt(mat,id,alpha=NULL,ratio=2.5,buffer=90,fraction=0.95, partCount = 10, 
-clipToCoast="terrestrial", checkdist=T, proj = "+proj=longlat +datum=WGS84", minimum=7,
-map=NULL,xlim=NULL,ylim=NULL,main=NULL)
+biodecrypt(mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon=NULL, checkdist = T, minimum = 7, plot=T, map = NULL, 
+    xlim = NULL, ylim = NULL, main = NULL)
 }
 \arguments{
   \item{mat}{
@@ -44,23 +40,13 @@ closest hull to allow attribution. Default 2.5 times.
    \item{buffer}{
 A distance buffer from hulls (in km).
 }
-   \item{fraction}{
-The minimum fraction of occurrences that must be included in polygon.
-}
-\item{partCount}{
-The maximum number of disjunct polygons that are allowed..
-}
-   \item{clipToCoast}{
-Either "no" (no clipping), "terrestrial" (only terrestrial part of range is kept) or 
-"aquatic" (only non-terrestrial part is clipped).
+   \item{polygon}{
+A SpatialPolygonsDataFrame with area of interests (ground or sea). Typically obtained from Natural Earth (https://www.naturalearthdata.com/). 
+If NULL no removal is applied
 }
    \item{checkdist}{
 Logical, if TRUE cases attributed to a given species based on relative distance from 
 hulls but closer to an identified record of another species are not attributed. 
-}
-   \item{proj}{
-the projection information for mat. In this version, the default is the only supported 
-option.
 }
    \item{minimum}{
 The minimum number of specimens required to build alpha hulls. If the number of 
@@ -68,6 +54,9 @@ identified specimens is lower, convex hulls are calculated to improve procedure 
 }
 \item{map}{
 A map to be plotted during the procedure to show the separation progress. 
+}
+\item{plot}{
+Flag to FALSE is plotting the result is not required
 }
 \item{xlim}{
 Longitude boudaries for the map. 
@@ -116,6 +105,12 @@ The percentage of Non-attributed Unidentified Records (NUR).
 The result table with Longitude and Latitude for each occurrence datum, its id after 
 the biodecrypt procedure (id2, the result of the procedure) and its initial id (id).
  }
+\item{hulls}{
+The hulls in sf format.
+ }
+\item{hullspl}{
+The hulls in alphahull format.
+ }
 }
 \references{
 Platania L. et al.
@@ -127,32 +122,34 @@ biodecrypt, a new tool tested on European butterflies. Glocal Ecology and Biogeo
 Leonardo Dapporto
 }
 \examples{
-# Create an example for a dataset
-mat<-rbind(cbind(rnorm(n = 20, mean = 1, sd = 4),rnorm(n = 20, mean = 40, sd = 3)),
-cbind(rnorm(n = 20, mean = 7, sd = 5),rnorm(n = 20, mean = 45, sd = 2)))
 
-id<-c(rep(1,20),rep(2,20))
-id[sample(c(1:40))[1:10]]<-0
+n1<-7
+n2<-7
+mat<-rbind(cbind(rnorm(n = n1, mean = 1, sd = 2),rnorm(n = n1, mean = 40, sd = 2)),cbind(rnorm(n = n2, mean = 7, sd = 2),rnorm(n = n2, mean = 45, sd = 2)))
 
-# Make the separation with default parameters 
-# alpha gets high to include 95% of defaults cases and hulls are almost convex 
-\dontrun{attribution<-biodecrypt(mat,id, clipToCoast="no")}
+id<-c(rep(1,n1),rep(2,n2))
+id[sample(c(1:(n1+n2)))[1:round((n1+n2)/4,0)]]<-0
+
+
+# Make the separation with custom parameters
+attribution<-biodecrypt(mat,id, alpha=c(10,10),polygon=NULL)
 
 #plot the results
-\dontrun{plot(mat,type="n")}
-\dontrun{biodecrypt.plot(attribution)}
+plot(mat,type="n")
+biodecrypt.plot(attribution, attributed = "fade")
+
 #Group plots into pies
-\dontrun{biodecrypt.plot(attribution, square=5, minsize=0.8)}
+biodecrypt.plot(attribution, attributed = "fade", square=2, minsize=0.5)
+
 
 
 # Make the separation with custom parameters
 # With a lower fraction values the first hull (alpha equal to 1) can become more 
 #concave. Excluded dots works as a punctiform sub-hull in the attribution. 
-\dontrun{attribution<-biodecrypt(mat,id, alpha=c(1,5), buffer=20, ratio=2, fraction=0.80, 
-	minimum=3, clipToCoast="no")}
+attribution<-biodecrypt(mat,id, alpha=c(1,5), buffer=20, ratio=2, minimum=5)
 
 #plot the results
-\dontrun{plot(mat,type="n")}
-\dontrun{biodecrypt.plot(attribution)}
-}
+plot(mat,type="n")
+biodecrypt.plot(attribution, attributed = "fade")
+	
 \keyword{record attribution}
