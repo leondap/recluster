@@ -1,5 +1,5 @@
-biodecrypt.plot<-function(x,minsize=0.3,pchid=1,cexid=0.1,square=0.001,col=c("red","darkgreen","blue","purple"), attributed=c("fade","points"), NUR="black", fading=50, ...){
-	if(x$type=="sep"){
+biodecrypt.plot<-function(x,minsize=0.3,pchid=1,cexid=0.1,square=0.001,col=c("red","darkgreen","blue","purple"), attributed=c("fade","points"), hull=T, NUR="black", fading=50, ...){
+if(x$type=="sep"){
 		data<-as.data.frame(x$table)
 		newcol<-as.character(paste(data[,1],data[,2],sep="_"))
 		data<-cbind(data,newcol)
@@ -25,6 +25,12 @@ biodecrypt.plot<-function(x,minsize=0.3,pchid=1,cexid=0.1,square=0.001,col=c("re
 				}
 			}
 		}
+		if(hull){
+			for(sphull in 1: length(x$hullpl)){
+				plot(x$hullpl[[sphull]],col=col[sphull], add=T)
+			}
+		
+		}
 		matcol[which(is.na(matcol[,3])),3:5]<-col2rgb(NUR)
 		recluster.plot.pie(data2[,1],data2[,2],mat=as.matrix(matcol),square=square,minsize=minsize,proportional=F,add=T)
 		if(attributed=="points"){
@@ -32,7 +38,7 @@ biodecrypt.plot<-function(x,minsize=0.3,pchid=1,cexid=0.1,square=0.001,col=c("re
 			long<-data2[,1]
 			latsqo<-floor(lat/square)*square
 			longsqo<-floor(long/square)*square
-			newcoord0<-cbind(aggregate(long~longsqo+latsqo, 	FUN="mean"),aggregate(lat~longsqo+latsqo, FUN="mean")[,3]) 
+			newcoord0<-cbind(aggregate(long~longsqo+latsqo, FUN="mean"),aggregate(lat~longsqo+latsqo, FUN="mean")[,3]) 
 			newcoord0[,5]<-paste(newcoord0[,1],newcoord0[,2])
 			lat<-data2[which(data2[,4]>0),2]
 			long<-data2[which(data2[,4]>0),1]
