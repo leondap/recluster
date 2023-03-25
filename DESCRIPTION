@@ -5,7 +5,7 @@ Version: 3.1
 Date: 2023-25-03
 Depends: ape, geosphere
 Imports: vegan, picante, phangorn, phytools, cluster, prevR, plotrix,
-        rgeos, raster, sp, rangeBuilder
+        rgeos, raster, sp
 Author: Leonardo Dapporto, Matteo Ramazzotti, Simone Fattorini, Roger
         Vila, Gerard Talavera, Roger H.L. Dennis
 Maintainer: Leonardo Dapporto <leondap@gmail.com>
