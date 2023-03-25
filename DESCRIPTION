@@ -1,11 +1,11 @@
 Package: recluster
 Type: Package
 Title: Ordination Methods for the Analysis of Beta-Diversity Indices
-Version: 3.0
-Date: 2020-07-09
+Version: 3.1
+Date: 2023-25-03
 Depends: ape, rangeBuilder, geosphere
 Imports: vegan, picante, phangorn, phytools, cluster, prevR, plotrix,
-        rgeos, raster, sp
+        rgeos, raster, sp, rangeBuilder
 Author: Leonardo Dapporto, Matteo Ramazzotti, Simone Fattorini, Roger
         Vila, Gerard Talavera, Roger H.L. Dennis
 Maintainer: Leonardo Dapporto <leondap@gmail.com>
@@ -14,4 +14,4 @@ License: GPL (>= 2.0)
 LazyLoad: yes
 URL: https://github.com/leondap/recluster
 NeedsCompilation: no
-Packaged: 2020-07-22 20:05:20 UTC; matteo
+
