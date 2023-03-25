@@ -37,7 +37,7 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon=N
         hulla <- mat[taxsp, ]
         hullas <- hulla[!duplicated(hulla), ]
         if (nrow(hullas) >= minimum) {
-		hull <- ahull(hullas, alpha=5)
+		hull <- ahull(hullas, alpha[spec])
 		hull2<- ah2sf(hull)
 		hullspat<-as_Spatial(hull2)
 		if (!(is.null(polygon))) {
