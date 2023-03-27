@@ -1,15 +1,16 @@
-biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon=NULL, checkdist = T, minimum = 7, plot=T, map = NULL, 
-    xlim = NULL, ylim = NULL, main = NULL) 
-	{
+biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon = NULL, 
+    checkdist = T, minimum = 7, plot = T, map = NULL, xlim = NULL, 
+    ylim = NULL, main = NULL) 
+{
     res <- NULL
     res$type <- "sep"
     borders <- NULL
-    taxa <- max(id)
+    taxa <- length(which(unique(id)>0))
     colnames(mat) <- c("Long", "Lat")
     distances <- matrix(0, nrow(mat), taxa)
     distances2 <- matrix(0, nrow(mat), taxa)
     if (is.null(alpha)) {
-        alpha = rep(8, taxa)
+        alpha = rep(10, taxa)
     }
     if (is.null(xlim)) {
         xlim <- c(min(mat[, 1]), max(mat[, 1]))
@@ -17,51 +18,50 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon=N
     if (is.null(ylim)) {
         ylim <- c(min(mat[, 2]), max(mat[, 2]))
     }
-	if(plot){
-	plot(cbind(xlim,ylim),type="n",main=main)
-	if(!is.null(map)){
-		plot(map,add=T)
-	}
-}
+    if (plot) {
+        plot(cbind(xlim, ylim), type = "n", main = main)
+        if (!is.null(map)) {
+            plot(map, add = T)
+        }
+    }
     vectab <- matrix(0, nrow(mat), taxa + 1)
-	
-
     hulls <- list()
-	hullpl<- NULL
+    hullpl <- NULL
     areas <- NULL
     oldw <- getOption("warn")
     options(warn = -1)
     for (spec in 1:taxa) {
-#spec<-1
         taxsp <- which(id == spec)
         hulla <- mat[taxsp, ]
         hullas <- hulla[!duplicated(hulla), ]
         if (nrow(hullas) >= minimum) {
-		hull <- ahull(hullas, alpha[spec])
-		hull2<- ah2sf(hull)
-		hullspat<-as_Spatial(hull2)
-		if (!(is.null(polygon))) {
-		hullspat<- rgeos::gIntersection(hullspat, land)
-	}
-	}	
-            if (nrow(hullas) < minimum) {
-            hull <- ahull(hullas, alpha=100)
-		hull2<- ah2sf(hull)
-		hullspat<-as_Spatial(hull2)
-		if (!(is.null(polygon))) {
-			hullspat<- rgeos::gIntersection(hullspat, polygon)
-		}            
-     }
-	hulls[spec]<-hullspat
-	hullpl[[spec]]<-hull
-	if(plot){
-	plot(hull,border=spec,add=T)
-	}
-
-	areas[spec]<-raster::area(hulls[[spec]])/1000000
-      vectab[prevR::point.in.SpatialPolygons(mat[, 1], mat[, 
+            hull <- ahull(hullas, alpha = alpha[spec])
+            hull2 <- ah2sf(hull)
+            hullspat <- as_Spatial(hull2)
+            if (!(is.null(polygon))) {
+                hullspat <- rgeos::gIntersection(hullspat, land)
+            }
+        }
+        if (nrow(hullas) < minimum) {
+            h<-as.data.frame(hullas)
+		as_sf <- st_as_sf(h, coords = c("Long","Lat"))
+		hull<-st_convex_hull(st_union(as_sf))
+		st_crs(hull) <- 4326
+            hullspat <- as_Spatial(hull)
+		print("fatto")
+            if (!(is.null(polygon))) {
+                hullspat <- rgeos::gIntersection(hullspat, polygon)
+            }
+        }
+        hulls[spec] <- hullspat
+        hullpl[[spec]] <- hull
+        if (plot) {
+		points(hullas)
+            plot(hull, add = T)
+        }
+        areas[spec] <- raster::area(hulls[[spec]])/1e+06
+        vectab[prevR::point.in.SpatialPolygons(mat[, 1], mat[, 
             2], hullspat), spec] <- 1
-
         fuo <- which(id == spec & vectab[, spec] == 0)
         fuori <- mat[fuo, ]
         distneed <- which(vectab[, spec] == 0 & id == 0)
@@ -186,29 +186,30 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon=N
     sympatry <- intersect
     for (k in 1:(taxa - 1)) {
         for (c in (k+1):taxa) {
-		tryintersect<-try(raster::intersect(hulls[[k]], hulls[[c]]),silent = TRUE)
-		if(inherits(tryintersect, 'try-error')){
-			intersect[k, c] <- 0
-                	sympatry[k, c] <- 0
-                	intersect[c, k] <- intersect[k, c]
-                	sympatry[c, k] <- sympatry[k, c]
-            }else{
-			inter <- raster::intersect(hulls[[k]], hulls[[c]])
-           		if (!is.null(inter)) {
-                		intersect[k, c] <- (raster::area(inter)/1e+06)
-                		sympatry[k, c] <- (raster::area(inter)/1e+06)/(areas[c] + 
-                  	areas[k] - area(inter)/1e+06)
-               		intersect[c, k] <- intersect[k, c]
-                		sympatry[c, k] <- sympatry[k, c]
-           		 }
-            	if (is.null(inter)) {
-                		intersect[k, c] <- 0
-                		sympatry[k, c] <- 0
-                		intersect[c, k] <- intersect[k, c]
-                		sympatry[c, k] <- sympatry[k, c]
-            	}
-        	}
-	}
+            tryintersect <- try(raster::intersect(hulls[[k]], hulls[[c]]), silent = TRUE)
+            if (inherits(tryintersect, "try-error")) {
+                intersect[k, c] <- 0
+                sympatry[k, c] <- 0
+                intersect[c, k] <- intersect[k, c]
+                sympatry[c, k] <- sympatry[k, c]
+            }
+            else {
+                inter <- raster::intersect(hulls[[k]], hulls[[c]])
+                if (!is.null(inter)) {
+                  intersect[k, c] <- sum(raster::area(inter)/1e+06)
+                  sympatry[k, c] <- intersect[k, c]/(areas[c] + 
+                    areas[k] - intersect[k, c])
+                  intersect[c, k] <- intersect[k, c]
+                  sympatry[c, k] <- sympatry[k, c]
+                }
+                if (is.null(inter)) {
+                  intersect[k, c] <- 0
+                  sympatry[k, c] <- 0
+                  intersect[c, k] <- intersect[k, c]
+                  sympatry[c, k] <- sympatry[k, c]
+                }
+            }
+        }
     }
     options(warn = oldw)
     res$areas <- areas
@@ -217,10 +218,11 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon=N
     res$NUR <- (length(which(id2 == 0))/length(which(id == 0))) * 
         100
     res$table <- cbind(mat, id2, id)
- res$hulls<-hulls
-res$hullpl<-hullpl
+    res$hulls <- hulls
+    res$hullpl <- hullpl
     return(res)
-    if (plot){
-	points(mat, col = id2, cex = 0.5)
+    if (plot) {
+        points(mat, col = id2, cex = 0.5)
+    }
 }
-}
+
