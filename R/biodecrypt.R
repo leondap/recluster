@@ -48,7 +48,6 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon =
 		hull<-st_convex_hull(st_union(as_sf))
 		st_crs(hull) <- 4326
             hullspat <- as_Spatial(hull)
-		print("fatto")
             if (!(is.null(polygon))) {
                 hullspat <- rgeos::gIntersection(hullspat, polygon)
             }
