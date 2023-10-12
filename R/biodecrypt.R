@@ -1,4 +1,4 @@
-biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon = NULL, 
+biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygon = NULL, 
     checkdist = T, minimum = 7, plot = T, map = NULL, xlim = NULL, 
     ylim = NULL, main = NULL) 
 {
@@ -12,6 +12,11 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon =
     if (is.null(alpha)) {
         alpha = rep(10, taxa)
     }
+	if (length(alpha)==1) {
+	alph<-alpha
+        alpha = rep(alph, taxa)
+    }
+
     if (is.null(xlim)) {
         xlim <- c(min(mat[, 1]), max(mat[, 1]))
     }
@@ -47,8 +52,8 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon =
 		as_sf <- st_as_sf(h, coords = c("Long","Lat"))
 		hull<-st_convex_hull(st_union(as_sf))
 		st_crs(hull) <- 4326
-            hullspat <- as_Spatial(hull)
-            if (!(is.null(polygon))) {
+           	 hullspat <- as_Spatial(hull)
+		if (!(is.null(polygon))) {
                 hullspat <- rgeos::gIntersection(hullspat, polygon)
             }
         }
@@ -224,4 +229,3 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90, polygon =
         points(mat, col = id2, cex = 0.5)
     }
 }
-
