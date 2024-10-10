@@ -8,7 +8,7 @@ importFrom("utils", "combn", "data", "write.table")
 importFrom("phytools", nodeHeights, treeSlice)
 importFrom("phangorn", nnls.tree)
 importFrom("picante", phylosor, node.age)
-importFrom("cluster", pam, silhouette, diana)
+importFrom("cluster", pam, silhouette, diana, daisy)
 #importFrom("vegan", metaMDS, designdist, scores)
 importFrom("plotrix", floating.pie, draw.circle)
 
