@@ -1,13 +1,13 @@
 \name{recluster.expl.diss}
 \alias{recluster.expl.diss}
 \title{
-Cuts a phylogenetic tree to a given series of nodes and computes explained dissimilarity.
+Cuts a phylogenetic tree and provides cluster membership of areas for custom of all possible clustering solutions and their explained dissimilarity.
 }
 \description{
-This function cuts a phylogenetic tree at any given series of nodes, provides membership for each element in the series of resulting clusters and computes the fraction of dissimilarity explained by each cut.
+This function cuts a phylogenetic tree at all its nodes, and provides membership for each element in the series of resulting clusters and computes the fraction of dissimilarity explained by each solution.
 }
 \usage{
-recluster.expl.diss(tree, dist, maxcl=NULL, mincl=NULL, expld=TRUE) 
+recluster.expl.diss(tree, dist, maxcl=NULL, mincl=NULL, maxnode=NULL, expld=TRUE) 
 }
 \arguments{
   \item{tree}{
@@ -17,17 +17,20 @@ A phylo tree
 A dissimilarity matrix.
 }
  \item{maxcl}{
-A custom number indicating the most external node to be cut. If NULL all the nodes are cut.
+A custom number indicating the solution with the minimum number of clusters. If NULL the minimum number of clusters is returned.
 }
  \item{mincl}{
-A custom number indicated the most internal node to be cut. If NULL the root is used
+A custom number indicated the solution with the maximum number of clusters. If NULL the maximum number of clusters is returned
+}
+ \item{maxnode}{
+A custom number indicated the most external node for the cut. If NULL all the nodes will be cut
 }
 \item{expld}{
 A logical. If TRUE then the matrix for explained dissimilarity is computed.
 }
 }
 \details{
-When polytomic nodes are involved in a cut the number of clusters at that cut will increase more than one unit. Holt at al. (2013) identified levels of explained dissimilarity to be used as a reliable threshold to assess a tree cut. When cases are highly numerous maxcl can be set in order to avoid a very long computation
+When polytomic nodes are involved in a cut the number of clusters at that cut could increase more than one unit. It is also possible that at the first cut more than two cluster are identified, it is thus possible to obatin a first solution showing a higher number of clusters then the miminum number included in mincl. Holt at al. (2013) identified levels of explained dissimilarity to be used as a reliable threshold to assess a tree cut. When cases are highly numerous maxnode can be set in order to avoid a very long computation keeping in mind that a cut at node 6 can produce solutions with >6 clusters
 }
 \value{
  \item{matrix}{
