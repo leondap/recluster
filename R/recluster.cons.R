@@ -3,18 +3,15 @@ recluster.cons <- function(mat,phylo=NULL,tr=100,p=0.5,dist="simpson", method="a
       {distance<-mat}
       else
       {distance<-recluster.dist(mat,phylo,dist)}
-      sampl<-cbind((1:nrow(as.matrix(distance)))+10,rownames(as.matrix(distance)))
+      sampl<-as.data.frame(cbind((1:nrow(as.matrix(distance))),rownames(as.matrix(distance))))
+      sampl2<-sampl
       res<-NULL	
       trees<-NULL
       RSS<-NULL
       for (i in 1 : tr){
 		dist1<-as.matrix(distance)		
-		sampl[,1]<-sample(1:nrow(sampl))+10
-		rownames(dist1)<-sampl[,1]
-		colnames(dist1)<-sampl[,1]
-		dist1<-dist1[order(rownames(dist1)), order(colnames(dist1))]
-		nam<-sampl[order(sampl[,1]),]
-		rownames(dist1)<-nam[,2]
+		sampl2<-sampl[sample(1:nrow(sampl)),]
+		dist1<-dist1[as.numeric(sampl2[,1]), as.numeric(sampl2[,1])]
 		tree<-as.phylo(hclust(as.dist(dist1),method=method))
 		if (select){RSS[[i]]<-attr(nnls.tree(as.dist(dist1), tree, rooted=T),"RSS")}
 		trees[[i]]<-tree				
