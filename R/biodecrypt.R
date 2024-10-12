@@ -1,5 +1,5 @@
 biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygon = NULL, 
-    checkdist = T, minimum = 7, plot = T, map = NULL, xlim = NULL, 
+    checkdist = T, minimum = 7, plot = F, map = NULL, xlim = NULL, 
     ylim = NULL, main = NULL) 
 {
     res <- NULL
