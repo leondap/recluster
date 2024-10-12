@@ -1,5 +1,5 @@
 
-biodecrypt.cross<-function(mat,id,alpha=NULL,ratio=2.5,buffer=90,fraction=0.95, partCount = 10, checkdist=T, clipToCoast="terrestrial", proj = "+proj=longlat +datum=WGS84", minimum=7,map=NULL,xlim=NULL,ylim=NULL,main=NULL,runs=10,test=T){
+biodecrypt.cross<-function(mat,id,alpha=NULL,ratio=2.5,buffer=90, checkdist=T, minimum=7, polygon=NULL, map=NULL,xlim=NULL,ylim=NULL,main=NULL,runs=10,test=T){
 	res<-NULL
 	res$type<-"cross"
 	taxa<-max(id)
@@ -14,7 +14,7 @@ biodecrypt.cross<-function(mat,id,alpha=NULL,ratio=2.5,buffer=90,fraction=0.95, 
 		stop("The cross validation procedure requires a minimum of 4 distinct points")
 	}
 	if(test){
-	test_run<-biodecrypt(mat,id,alpha=alpha,ratio=ratio,buffer=buffer,map=map,fraction=fraction, partCount=partCount, checkdist=checkdist, clipToCoast=clipToCoast, proj = proj, xlim=xlim,ylim=ylim,main=main)
+	test_run<-biodecrypt(mat,id,alpha=alpha,ratio=ratio,buffer=buffer,map=map,polygon=polygon, checkdist=checkdist, xlim=xlim,ylim=ylim,main=main)
 	res$NUR<-test_run$NUR
 	res$areas<-test_run$areas
 	res$intersections<-test_run$intersections
