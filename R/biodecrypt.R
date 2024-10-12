@@ -7,6 +7,10 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
     borders <- NULL
     taxa <- length(which(unique(id)>0))
     colnames(mat) <- c("Long", "Lat")
+	usenondupl<-which(!(duplicated(cbind(mat,id))))
+	mat<-mat[usenondupl,]
+	id<-id[usenondupl]
+	matpunti<-st_as_sf(as.data.frame(mat),coords = c("Long","Lat"), crs = 4326)
     distances <- matrix(0, nrow(mat), taxa)
     distances2 <- matrix(0, nrow(mat), taxa)
     if (is.null(alpha)) {
@@ -36,92 +40,48 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
     oldw <- getOption("warn")
     options(warn = -1)
     for (spec in 1:taxa) {
+#spec<-1
         taxsp <- which(id == spec)
-        hulla <- mat[taxsp, ]
-        hullas <- hulla[!duplicated(hulla), ]
+        hullas <- matpunti[taxsp, ]
         if (nrow(hullas) >= minimum) {
-            hull <- ahull(hullas, alpha = alpha[spec])
+		hullasp<-mat[taxsp, ]
+            hull <- ahull(hullasp, alpha = alpha[spec])
             hull2 <- ah2sf(hull)
-            hullspat <- as_Spatial(hull2)
+            hullspat<- st_as_sf(hull2)
             if (!(is.null(polygon))) {
-                hullspat <- rgeos::gIntersection(hullspat, land)
+                hullspat <- st_intersection(hullspat, polygon)
             }
         }
         if (nrow(hullas) < minimum) {
-            h<-as.data.frame(hullas)
-		as_sf <- st_as_sf(h, coords = c("Long","Lat"))
-		hull<-st_convex_hull(st_union(as_sf))
-		st_crs(hull) <- 4326
-           	 hullspat <- as_Spatial(hull)
+            hull<-st_convex_hull(st_make_valid(st_union(hullas)))
+		hullspat<-hull
 		if (!(is.null(polygon))) {
-                hullspat <- rgeos::gIntersection(hullspat, polygon)
+                hullspat <- st_intersection(hull, polygon)
             }
         }
-        hulls[spec] <- hullspat
+        hulls[[spec]] <- hullspat
         hullpl[[spec]] <- hull
         if (plot) {
-		points(hullas)
             plot(hull, add = T)
+		points(hullas)
+
         }
-        areas[spec] <- raster::area(hulls[[spec]])/1e+06
-        vectab[prevR::point.in.SpatialPolygons(mat[, 1], mat[, 
-            2], hullspat), spec] <- 1
-        fuo <- which(id == spec & vectab[, spec] == 0)
-        fuori <- mat[fuo, ]
-        distneed <- which(vectab[, spec] == 0 & id == 0)
-        if (length(distneed > 0)) {
-            needdist <- mat[which(vectab[, spec] == 0 & id == 
-                0), ]
-            disthull <- geosphere::dist2Line(needdist, hullspat)[, 
-                1]/1000
-        }
-        if (length(fuo) > 1 & length(which(vectab[, spec] == 
-            0 & id == 0)) == 1) {
-            distpoints <- (geosphere::distm(rbind(fuori, needdist), 
-                fun = distGeo)/1000)
-            distpointsneed <- distpoints[(length(fuo) + 1):nrow(distpoints), 
-                (1:length(fuo))]
-            distot <- c(disthull, distpointsneed)
-            distances[which(vectab[, spec] == 0 & id == 0), spec] <- min(distot)
-        }
-        if (length(fuo) > 1 & length(which(vectab[, spec] == 
-            0 & id == 0)) > 1) {
-            distpoints <- (geosphere::distm(rbind(fuori, needdist), 
-                fun = distGeo)/1000)
-            distpointsneed <- distpoints[(length(fuo) + 1):nrow(distpoints), 
-                (1:length(fuo))]
-            distot <- cbind(disthull, distpointsneed)
-            distmin <- apply(distot, 1, FUN = min)
-            distances[which(vectab[, spec] == 0 & id == 0), spec] <- distmin
-        }
-        if (length(fuo) == 1 & length(which(vectab[, spec] == 
-            0 & id == 0)) > 1) {
-            distpoints <- (geosphere::distm(rbind(fuori, needdist), 
-                fun = distGeo)/1000)
-            distpointsneed <- distpoints[2:nrow(distpoints), 
-                1]
-            distot <- cbind(disthull, distpointsneed)
-            distmin <- apply(distot, 1, FUN = min)
-            distances[which(vectab[, spec] == 0 & id == 0), spec] <- distmin
-        }
-        if (length(fuo) == 1 & length(which(vectab[, spec] == 
-            0 & id == 0)) == 1) {
-            distpoints <- (geosphere::distm(rbind(fuori, needdist), 
-                fun = distGeo)/1000)
-            distpointsneed <- distpoints[2:nrow(distpoints), 
-                1]
-            distot <- c(disthull, distpointsneed)
-            distances[which(vectab[, spec] == 0 & id == 0), spec] <- min(distot)
-        }
-        if (length(fuo) == 0) {
-            distances[which(vectab[, spec] == 0 & id == 0), spec] <- disthull
-        }
+        areas[spec] <- sum(st_area(hulls[[spec]]))
+	pointin <- unlist(st_contains(hulls[[spec]], matpunti))
+        vectab[pointin, spec] <- 1
+	dist_matrix <- st_distance(matpunti , hullspat)
+		distances[,spec]  <- apply(dist_matrix, 1, min)
+        
     }
+
     vectab[, ncol(vectab)] <- rowSums(vectab[, 1:taxa])
     id2 <- id
     uncertain1 <- which(vectab[, ncol(vectab)] > 1 & id == 0)
+	#uncertain1 are those within two hulls
     uncertain2 <- which(vectab[, ncol(vectab)] == 0 & id == 0)
+	#uncertain2 are those outside any hull
     inside <- which(vectab[, ncol(vectab)] == 1 & id == 0)
+	#inside are those within a single hull
     if (length(uncertain2) > 1) {
         distancesunc <- distances[uncertain2, ]
         order <- matrix(NA, length(uncertain2), taxa)
@@ -174,13 +134,12 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
         check <- which(id2 > 0 & id == 0)
         if (length(check > 0)) {
             for (ch in 1:length(check)) {
+			#ch<-1
                 attrp <- id2[check[ch]]
-                dist1 <- geosphere::distGeo(mat[check[ch], ], 
-                  mat[which(id > 0), ])
-                minimum <- aggregate(dist1 ~ id[which(id > 0)], 
-                  FUN = "min")
-                mini <- which(minimum[, 2] == min(minimum[, 2]))
-                if (attrp != mini) {
+			use<-id[which(id > 0)]
+                dist1 <- st_distance(matpunti[check[ch],], matpunti[which(id > 0),])
+			mini<-which.min(dist1)
+                 if (attrp != use[mini]) {
                   id2[check[ch]] <- 0
                 }
             }
@@ -190,7 +149,9 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
     sympatry <- intersect
     for (k in 1:(taxa - 1)) {
         for (c in (k+1):taxa) {
-            tryintersect <- try(raster::intersect(hulls[[k]], hulls[[c]]), silent = TRUE)
+#k<-1
+#c<-2
+            tryintersect <- try(st_intersection(hulls[[k]], hulls[[c]]), silent = TRUE)
             if (inherits(tryintersect, "try-error")) {
                 intersect[k, c] <- 0
                 sympatry[k, c] <- 0
@@ -198,9 +159,9 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
                 sympatry[c, k] <- sympatry[k, c]
             }
             else {
-                inter <- raster::intersect(hulls[[k]], hulls[[c]])
-                if (!is.null(inter)) {
-                  intersect[k, c] <- sum(raster::area(inter)/1e+06)
+                if (!is.null(tryintersect)) {
+
+                  intersect[k, c] <- sum(st_area(tryintersect))
                   sympatry[k, c] <- intersect[k, c]/(areas[c] + 
                     areas[k] - intersect[k, c])
                   intersect[c, k] <- intersect[k, c]
@@ -226,6 +187,6 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
     res$hullpl <- hullpl
     return(res)
     if (plot) {
-        points(mat, col = id2, cex = 0.5)
+        points(matpunti, col = id2, cex = 0.5)
     }
 }
