@@ -38,7 +38,7 @@ Calculate the Simpson dissimilatity matrix based on occurrence data
 
 ```
 simpdiss_b <- recluster.dist(dataisl)
-recluster.hist(simpdiss_b)
+
 ```
 
 The recluster package includes a function to inspect the fraction of zero and tied values
