@@ -1,4 +1,4 @@
-biodecrypt.wrap<-function(mat,id,alpha=c(1,5,10,15),alphamat=NULL,ratio=c(2,3,4,5),buffer=c(0,40,80,120,160),fraction=0.95, partCount=10, checkdist=T, clipToCoast="terrestrial", proj="+proj=longlat +datum=WGS84", minimum=7, map=NULL,xlim=NULL,ylim=NULL,main=NULL,save=T,name="res_cross.txt",runs=10){
+biodecrypt.wrap<-function(mat,id,alpha=c(1,5,10,15),alphamat=NULL,ratio=c(2,3,4,5),buffer=c(0,40,80,120,160), checkdist=T, polygon=NULL, minimum=7, map=NULL,xlim=NULL,ylim=NULL,main=NULL,save=T,name="res_cross.txt",runs=10){
 	res<-NULL
 	taxa<-max(id)
 	al<-length(alpha)
@@ -22,7 +22,7 @@ biodecrypt.wrap<-function(mat,id,alpha=c(1,5,10,15),alphamat=NULL,ratio=c(2,3,4,
 					addcol<-ncol(alphamat)
 				}
 				print(c(alphav,ratiov,bufferv))
-				cross<-biodecrypt.cross(mat, id, ratio=ratio[ratiov],buffer=buffer[bufferv],alpha=alphause, checkdist=checkdist,map=map, fraction=fraction, partCount=partCount, clipToCoast=clipToCoast, proj = proj,runs=runs, test=T) 
+				cross<-biodecrypt.cross(mat, id, ratio=ratio[ratiov],buffer=buffer[bufferv],alpha=alphause, checkdist=checkdist,map=map, fraction=fraction, polygon=polygon, runs=runs, test=T) 
 				res_cross[riga,4]<-ratio[ratiov]
 				res_cross[riga,5]<-buffer[bufferv]
 				if(is.null(alphamat)){
