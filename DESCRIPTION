@@ -4,7 +4,7 @@ Title: Ordination Methods for the Analysis of Beta-Diversity Indices
 Version: 3.3
 Date: 2024-10-12
 Depends: alphahull, ape, sf, sp, vegan,
-Imports: grDevices, graphics, stats, utils, phytools, phanghorn, picante, cluster, plotrix
+Imports: grDevices, graphics, stats, utils, phytools, phangorn, picante, cluster, plotrix
 Author: Leonardo Dapporto, Matteo Ramazzotti, Simone Fattorini, Roger
         Vila, Gerard Talavera, Roger H.L. Dennis
 Maintainer: Leonardo Dapporto <leondap@gmail.com>
