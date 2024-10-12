@@ -160,8 +160,7 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
             }
             else {
                 if (!is.null(tryintersect)) {
-
-                  intersect[k, c] <- sum(st_area(tryintersect))
+		intersect[k, c] <- sum(st_area(st_make_valid(tryintersect)))
                   sympatry[k, c] <- intersect[k, c]/(areas[c] + 
                     areas[k] - intersect[k, c])
                   intersect[c, k] <- intersect[k, c]
