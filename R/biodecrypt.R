@@ -3,6 +3,7 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
     ylim = NULL, main = NULL) 
 {
     res <- NULL
+	alphaused<-NULL
     res$type <- "sep"
     borders <- NULL
     taxa <- length(which(unique(id)>0))
@@ -45,9 +46,17 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
         hullas <- matpunti[taxsp, ]
         if (nrow(hullas) >= minimum) {
 		hullasp<-mat[taxsp, ]
-            hull <- ahull(hullasp, alpha = alpha[spec])
+            
+		for(increasea in alpha[spec]:20){
+		hull <- ahull(hullasp, alpha = increasea)
             hull2 <- ah2sf(hull)
-            hullspat<- st_as_sf(hull2)
+		hulltry<- try(st_as_sf(hull2), silent = TRUE)
+            if (!(inherits(hulltry, "try-error"))) {
+		break}else{
+		}
+		}
+            hullspat<-hulltry
+		alphaused[spec]<-increasea
             if (!(is.null(polygon))) {
                 hullspat <- st_intersection(hullspat, polygon)
             }
@@ -176,7 +185,7 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
         }
     }
     options(warn = oldw)
-    res$areas <- areas
+	res$areas <- areas
     res$intersections <- intersect
     res$sympatry <- sympatry
     res$NUR <- (length(which(id2 == 0))/length(which(id == 0))) * 
@@ -184,6 +193,7 @@ biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygo
     res$table <- cbind(mat, id2, id)
     res$hulls <- hulls
     res$hullpl <- hullpl
+	res$alphaused<-alphaused
     return(res)
     if (plot) {
         points(matpunti, col = id2, cex = 0.5)
