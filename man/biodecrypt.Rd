@@ -38,7 +38,7 @@ The minimum ratio between the distance from the second distant hull compared to 
 closest hull to allow attribution. Default 2.5 times.
 }
    \item{buffer}{
-A distance buffer from hulls (in km).
+A distance buffer from hulls (metres).
 }
    \item{polygon}{
 A SpatialPolygonsDataFrame with area of interests (ground or sea). Typically obtained from Natural Earth (https://www.naturalearthdata.com/). 
