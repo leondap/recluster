@@ -48,7 +48,7 @@ biodecrypt.cross<-function(mat,id,alpha=NULL,ratio=2.5,buffer=90, checkdist=T, m
 			}
 			}
 		}
-		finalebs<-biodecrypt(matrixnewbs[,c(1,2)], memberbs, alpha=alpha, minimum=minimum, ratio=ratio,buffer=buffer,fraction=fraction, partCount=partCount, checkdist=checkdist,clipToCoast=clipToCoast, proj = proj,map=map,xlim=xlim,ylim=ylim,main=main) 
+		finalebs<-biodecrypt(matrixnewbs[,c(1,2)], memberbs, alpha=alpha, minimum=minimum, ratio=ratio,buffer=buffer, checkdist=checkdist,polygon=polygon, map=map,xlim=xlim,ylim=ylim,main=main) 
 		attri<-which(memberbs==0)
 		attr[attri]<-finalebs$table[attri,3]
 	}
