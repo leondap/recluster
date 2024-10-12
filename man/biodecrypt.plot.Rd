@@ -32,7 +32,7 @@ value is lower than data resolution then records are not grouped in pies.
 The colours to be attributed to species: 1...n.
 }
 \item{attributed}{
-The method to plot known records.
+The method to plot known records. Using attributed="fade" will make the attributed dots paler than known cases based on fading (see below). Using attributed="points" will plot a balck dot to distinguish known cases. 
 }
 \item{NUR}{
 The colour for NUR records after biodecrypt.
