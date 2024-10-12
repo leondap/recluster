@@ -38,8 +38,8 @@ biodecrypt.cross<-function(mat,id,alpha=NULL,ratio=2.5,buffer=90, checkdist=T, m
 		memberbs<-matrixnewbs[,3]
 		for (spe in 1:length(species)){
 			#spe<-2
-			first[spe]<-round(1+((giro-1)*how_may[spe]))
-			last[spe]<-round(giro*how_may[spe],0)
+			first[spe]<-round(1+((giro-1)*as.numeric(how_may[spe])))
+			last[spe]<-round(giro*as.numeric(how_may[spe]),0)
 			qualitot<-which(matrixnewbs[,3]==species[spe])
 			if(first[spe]<=last[spe]){
 			memberbs[qualitot[first[spe]:last[spe]]]<-0
