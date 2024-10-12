@@ -22,7 +22,7 @@ biodecrypt.wrap<-function(mat,id,alpha=c(1,5,10,15),alphamat=NULL,ratio=c(2,3,4,
 					addcol<-ncol(alphamat)
 				}
 				print(c(alphav,ratiov,bufferv))
-				cross<-biodecrypt.cross(mat, id, ratio=ratio[ratiov],buffer=buffer[bufferv],alpha=alphause, checkdist=checkdist,map=map, fraction=fraction, polygon=polygon, runs=runs, test=T) 
+				cross<-biodecrypt.cross(mat, id, ratio=ratio[ratiov],buffer=buffer[bufferv],alpha=alphause, checkdist=checkdist,map=map, polygon=polygon, runs=runs, test=T) 
 				res_cross[riga,4]<-ratio[ratiov]
 				res_cross[riga,5]<-buffer[bufferv]
 				if(is.null(alphamat)){
