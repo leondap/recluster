@@ -177,7 +177,7 @@ Kreft & Jetz (2010) and Holt et al. (2013) aggregated sites in the colour space 
 ```
 membership<-expl_diss$matrix[,7]
 ```
-and the colours for teh resulting clusters as:
+and the colours for the resulting clusters as:
 ```
 new_colours_sim<-recluster.group.col (colours_simp,membership)
 recluster.plot.col(new_colours_sim$aggr,text=F,cex=2)
