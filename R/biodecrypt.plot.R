@@ -1,4 +1,4 @@
-biodecrypt.plot<-function(x,minsize=0.3,pchid=1,cexid=0.1,square=0.001,col=c("red","darkgreen","blue","purple"), attributed=c("fade","points"), hull=T, NUR="black", fading=50, ...){
+biodecrypt.plot<-function(x,minsize=0.3,pchid=1,cexid=0.1,square=0.001,col=c("red","darkgreen","blue","purple"), attributed=NULL, hull=T, NUR="black", fading=50, ...){
 if(x$type=="sep"){
 		data<-as.data.frame(x$table)
 		newcol<-as.character(paste(data[,1],data[,2],sep="_"))
@@ -16,6 +16,9 @@ if(x$type=="sep"){
 			matcol[which,3]<-as.vector(col2rgb(col[sp]))[1]
 			matcol[which,4]<-as.vector(col2rgb(col[sp]))[2]
 			matcol[which,5]<-as.vector(col2rgb(col[sp]))[3]
+		}
+		if(is.null(attributed)){
+			attributed<-"fade"
 		}
 		if(attributed=="fade"){
 			lower<-which(data2[,4]==0 & data2[,3]>0)
