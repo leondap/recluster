@@ -84,6 +84,7 @@ each unidentified record could be either: i) inside more than one hull, ii) insi
 - Check for distances from the nearest identified record
  As described above, the attribution of unknown records is strictly determined by the 
  distance from the hulls. The biodecrypt function also contains an option (checkdist=T) to check if cases attributed to a given species based on relative distance from hulls are closer to an identified record of another species, which may occasionally occur. If this option is selected (as in the default settings) these cases are not attributed to any species.
+Depending on the topology of occurrence data, some alpha values could return no hulls. In this cases, biodecrypt tries to increase alpha up the the lowest value for which a hull is obtained. The alpha values used is stored in the alphaused vector.
 }
 \value{
 \item{type}{
@@ -110,6 +111,9 @@ The hulls in sf format.
  }
 \item{hullspl}{
 The hulls in alphahull format.
+ }
+\item{alphaused}{
+The values of alpha used fopr each species (see details).
  }
 }
 \references{
