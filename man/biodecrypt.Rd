@@ -136,15 +136,14 @@ id[sample(c(1:(n1+n2)))[1:round((n1+n2)/4,0)]]<-0
 
 
 # Make the separation with custom parameters
-attribution<-biodecrypt(mat,id, alpha=c(10,10),polygon=NULL)
+attribution<-biodecrypt(mat,id, alpha=c(10,10))
 
 #plot the results
 plot(mat,type="n")
-biodecrypt.plot(attribution, attributed = "fade")
+biodecrypt.plot(attribution)
 
 #Group plots into pies
-biodecrypt.plot(attribution, attributed = "fade", square=2, minsize=0.5)
-
+biodecrypt.plot(attribution, square=2, minsize=0.5)
 
 
 # Make the separation with custom parameters
@@ -154,6 +153,6 @@ attribution<-biodecrypt(mat,id, alpha=c(1,5), buffer=20, ratio=2, minimum=5)
 
 #plot the results
 plot(mat,type="n")
-biodecrypt.plot(attribution, attributed = "fade")
+biodecrypt.plot(attribution)
 	
 \keyword{record attribution}
