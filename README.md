@@ -277,9 +277,15 @@ map <- getMap(resolution = "low")
 library(rnaturalearth)
 polygon <- ne_download(scale = 10, type = "land", category = "physical", returnclass = "sf")
 ```
-Open the data for the Polyommatus icarus and celina taxa
+Open the data for the Polyommatus icarus and celina taxa and obtain the matrix of coordinates (mat) and the id vector (id)
 ```
 data <- read.csv("https://raw.githubusercontent.com/leondap/files/refs/heads/main/Polyommatus.csv")
+mat<-data[,c(7:6)]
+id<-data[,3]
+```
+Run a biodecrypt analysis with alpha=5 for both species and buffer=50000 metres
+```
+biodecrypt1<-biodecrypt(mat, id,alpha=c(5,5),map=map, buffer=50000, polygon=polygon, plot=T)
 ```
 
 References
