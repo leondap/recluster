@@ -139,7 +139,7 @@ Leonardo Dapporto
 #id<-c(rep(1,20),rep(2,20))
 #id[sample(c(1:40))[1:10]]<-0
 
-#cross<-biodecrypt.cross(mat,id, clipToCoast="no")
+#cross<-biodecrypt.cross(mat,id)
 #plot(mat,type="n")
 #biodecrypt.plot(cross)
 }
