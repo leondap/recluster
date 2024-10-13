@@ -255,16 +255,16 @@ After the construction of the alpha-hulls, biodecrypt attempts the attribution o
 
 ![](https://github.com/leondap/images/blob/main/biodecrypt_fig1.jpg?raw=true)
 
-2.2 Cases inside more than one hull
+1 Cases inside more than one hull
 In this case, the function cannot attribute the unidentified records to a species (record 1 in the Figure) and only the a priori identified records belonging to intersection areas are passed to the final vector as identified.
 
-2.3 Cases inside a single hull
+2 Cases inside a single hull
 The unidentified records falling inside a single hull are attributed to that species if their distance to any other hull is higher than the buffer value (in km) provided by the user (record 2 in the Figure). Unidentified records inside the buffer of another hull are not attributed (record 3 in the Figure).
 
-2.4 Cases outside all hulls
+3 Cases outside all hulls
 The unidentified records that do not fall inside any hull are attributed to the closest hull if: (a) the distance from the second nearest hull is higher than the buffer and if (b) the ratio between the minimum distance to the second closest hull and to the closest hull is more than the ratio value indicated by the user. For example, in Figure 2 record 4 is not attributed while record 5 is attributed to Polyommatus celina.
 
-2.5 Check for distances from the nearest identified record
+4 Check for distances from the nearest identified record
 As described above, the attribution of unattributed records is strictly determined by the distance from the hulls. The biodecrypt function also contains an option (“checkdist”) to check if records attributed to a given species based on relative distance from hulls are closer to an identified record of another species, which may occasionally occur. If this option is selected (default) these records are not attributed to any species (record 6 in the Figure).
 
 Biodecrypt also computes the area of overlap among hulls and can exclude sea areas for terrestrial organisms and land area for marine ones based on a polygon defining them.
