@@ -96,12 +96,12 @@ id<-c(rep(1,20),rep(2,20))
 id[sample(c(1:40))[1:10]]<-0
 
 \dontrun{wrap_data_fast<-biodecrypt.wrap(mat,id, alpha=c(1,4), ratio=2, 
-		buffer=20, runs=2, clipToCoast="no")}
+		buffer=20, runs=2)}
 \dontrun{parameters<-biodecrypt.optimise(wrap_data_fast$table,penalty=10)}
 
 #Make the example with default 10 runs and more values
 \dontrun{wrap_data<-biodecrypt.wrap(mat,id, alpha=c(1,4), ratio=c(2,4), 
-		buffer=c(20,50), clipToCoast="no")}
+		buffer=c(20,50))}
 \dontrun{parameters<-biodecrypt.optimise(wrap_data$table)}
 
 #inspect the optimised parameters
@@ -118,7 +118,7 @@ id[sample(c(1:40))[1:10]]<-0
 \dontrun{alphamat<-cbind(alpha1,alpha2)}
 
 \dontrun{wrap_data<-biodecrypt.wrap(mat,id, alphamat=alphamat, ratio=c(2,4),  
-                           buffer=c(20,50), clipToCoast="no")}
+                           buffer=c(20,50))}
 
 \dontrun{parameters<-biodecrypt.optimise(wrap_data$table, penalty=20)}
 
