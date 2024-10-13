@@ -279,7 +279,7 @@ polygon <- ne_download(scale = 10, type = "land", category = "physical", returnc
 ```
 Open the data for the Polyommatus icarus and celina taxa
 ```
-data <- read.csv("https://github.com/leondap/files/blob/4a6240b6ae48eb3afdaba47a5d6f34ad42c0aea0/Polyommatus.csv")
+data <- read.csv("https://raw.githubusercontent.com/leondap/files/refs/heads/main/Polyommatus.csv")
 ```
 
 References
