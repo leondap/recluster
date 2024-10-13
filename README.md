@@ -308,7 +308,7 @@ Which means that 1.8% of identified specimens were misindentified when included 
 The values of alpha, buffer and ratio can be optimised by biodecrypt.wrap that replicates the cross-validation analysis by using all possible combinations of a series of distance ratio, alpha and buffer values to compare their resulting MIR, NIR and NUR. To optimise the three parameters for each species, we introduced a combination of MIR2 + NIR + NUR as a penalty value for the different combinations of the parameters. Since the method showing the lowest penalty in cross-validation might not necessarily be the optimal value for the final analysis, all the combinations showing a penalty value not higher than a certain threshold compared with the analysis showing the lowest penalty should be considered as potentially good. We provided a value of 10% as a default, representing a variation of about 3% for each addendum of the penalty. The optimal parameters can then be calculated as mean values of distance ratio, alpha and buffer among those used in these cross-validation analyses, weighted by 1/penalty to provide an increasing contribution to the solutions with low penalty values. This is done by biodecrypt.optimise, calculating the optimal values of alpha, buffer and distance ratio based on biodecrypt.wrap results.
 
 
-###References
+### References
 
 Dapporto, L., Ramazzotti, M., Fattorini, S., Talavera, G., Vila, R., & Dennis, R. L. (2013). recluster: an unbiased clustering procedure for beta‐diversity turnover. Ecography, 36(10), 1070-1075.
 
