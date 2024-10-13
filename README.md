@@ -285,7 +285,10 @@ id<-data[,3]
 ```
 Run a biodecrypt analysis with alpha=5 for both species and buffer=50000 metres
 ```
-biodecrypt1<-biodecrypt(mat, id,alpha=c(5,5),map=map, buffer=50000, polygon=polygon, plot=T)
+biodecrypt1<-biodecrypt(mat, id,alpha=c(5,5),map=map, buffer=50000, polygon=polygon)
+plot(map, xlim=range(mat[,1]),ylim=range(mat[,2]))
+biodecrypt.plot(biodecrypt1, col=c("red","blue"))
+
 ```
 
 References
