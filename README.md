@@ -248,6 +248,27 @@ plot(coordin[,1], coordin[,2],  col = rgb(newcol[, 3], newcol[,4], newcol[, 5], 
 ```
 ![](https://github.com/leondap/images/blob/main/region4xcolours.png?raw=true)
 
+### The biodecrypt functions
+Occurrence data are fundamental to macroecology, but accuracy is often compromised when multiple units are lumped together (e.g., in recently separated cryptic species, in genetic lineages or in citizen science records). When such units are at least in part allopatric unidentified occurrences can be objectively attributed to the most probable unit based on a subset of identified records. The objective of the algorithm is to reliably attribute species membership to a set of ambiguous records belonging to two (or more) cryptic entities based on the distribution of a subset of accurately determined records. The main idea is that records from an area where only one taxon occurs can be attributed with confidence, while records from the areas of sympatry or too far from any ascertained record cannot be reliably attributed.
+The main inputs for the functions are a matrix with longitude and latitude for all the occurrence data and a vector (in the same order) providing their identification. The  identified records must be indicated in the vector with a sequential numeric value (1, 2, …, n), which represents the verified membership to the nth unit. The occurrence data with unknown identification (unidentified records) are marked with a 0. Based on this vector and on the geographic coordinates of identified records, biodecrypt builds concave hulls of distribution for each species (ahull algorithm).
+After the construction of the alpha-hulls, biodecrypt attempts the attribution of unidentified records to the most likely unit. For this aim, biodecrypt also requires a buffer and a ratio value (explained below). Based on hull geometry and their relative position, each unidentified record could be either: (a) inside more than one hull, (b) inside a single hull, or (c) outside all hulls. The three cases are treated separately and referred to the figure below which represents an example of the assignment procedure based on the overlapping distributions of Polyommatus icarus (red) and Polyommatus celina (blue) in Iberia. Red and blue dots represent the sites from where specimens of the respective species have been sequenced, empty circles represent sites with unidentified records. The continuous red and blue lines represent the hulls obtained for the two species based on occurrence of sequenced specimens, the dotted blue line represents the buffer of the P. celina hull (for clarity, the buffer of the P. icarus hull is not represented). 
+
+![](https://github.com/leondap/images/blob/main/biodecrypt_fig1.jpg?raw=true)
+
+2.2 Cases inside more than one hull
+In this case, the function cannot attribute the unidentified records to a species (record 1 in the Figure) and only the a priori identified records belonging to intersection areas are passed to the final vector as identified.
+
+2.3 Cases inside a single hull
+The unidentified records falling inside a single hull are attributed to that species if their distance to any other hull is higher than the buffer value (in km) provided by the user (record 2 in the Figure). Unidentified records inside the buffer of another hull are not attributed (record 3 in the Figure).
+
+2.4 Cases outside all hulls
+The unidentified records that do not fall inside any hull are attributed to the closest hull if: (a) the distance from the second nearest hull is higher than the buffer and if (b) the ratio between the minimum distance to the second closest hull and to the closest hull is more than the ratio value indicated by the user. For example, in Figure 2 record 4 is not attributed while record 5 is attributed to Polyommatus celina.
+
+2.5 Check for distances from the nearest identified record
+As described above, the attribution of unattributed records is strictly determined by the distance from the hulls. The biodecrypt function also contains an option (“checkdist”) to check if records attributed to a given species based on relative distance from hulls are closer to an identified record of another species, which may occasionally occur. If this option is selected (default) these records are not attributed to any species (record 6 in the Figure).
+
+
+
 
 References
 
