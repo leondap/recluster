@@ -290,8 +290,11 @@ plot(map, xlim=range(mat[,1]),ylim=range(mat[,2]))
 biodecrypt.plot(biodecrypt1, col=c("red","blue"))
 
 ```
+![](https://github.com/leondap/images/blob/main/Biodecrypr_fig2.jpg?raw=true)
 
-References
+
+
+###References
 
 
 Dapporto, L., Ciolli, G., Dennis, R. L., Fox, R., & Shreeve, T. G. (2015). A new procedure for extrapolating turnover regionalization at mid‐small spatial scales, tested on British butterflies. Methods in Ecology and Evolution, 6(11), 1287-1297.
