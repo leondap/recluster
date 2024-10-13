@@ -310,10 +310,13 @@ The values of alpha, buffer and ratio can be optimised by biodecrypt.wrap that r
 
 ###References
 
+Dapporto, L., Ramazzotti, M., Fattorini, S., Talavera, G., Vila, R., & Dennis, R. L. (2013). recluster: an unbiased clustering procedure for beta‐diversity turnover. Ecography, 36(10), 1070-1075.
 
 Dapporto, L., Ciolli, G., Dennis, R. L., Fox, R., & Shreeve, T. G. (2015). A new procedure for extrapolating turnover regionalization at mid‐small spatial scales, tested on British butterflies. Methods in Ecology and Evolution, 6(11), 1287-1297.
 
 Holt, B.G., Lessard, J.-P., Borregaard, M.K., Fritz S.A., Araújo, M.B., Dimitrov, D., Fabre, P.-H. Graham, C.H., Graves, G.R., Jønsson, K.A., Nogués-Bravo, D., Wang Z., Whittaker, R.J., Fjeldså, J. & Rahbek, C. (2013) An update of Wallace’s zoogeographic regions of the world Science, 339, 74–78.
 
 Kreft, H. & Jetz, W. (2010) A framework for delineating biogeographic regions based on species distributions. Journal of Biogeography, 37, 2029–2053.
+
+Platania, L., Menchetti, M., Dincă, V., Corbella, C., Kay‐Lavelle, I., Vila, R., ... & Dapporto, L. (2020). Assigning occurrence data to cryptic taxa improves climatic niche assessments: Biodecrypt, a new tool tested on European butterflies. Global Ecology and Biogeography, 29(10), 1852-1865.
 
