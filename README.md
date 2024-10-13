@@ -250,7 +250,7 @@ plot(coordin[,1], coordin[,2],  col = rgb(newcol[, 3], newcol[,4], newcol[, 5], 
 
 ### The biodecrypt functions
 Occurrence data are fundamental to macroecology, but accuracy is often compromised when multiple units are lumped together (e.g., in recently separated cryptic species, in genetic lineages or in citizen science records). When such units are at least in part allopatric unidentified occurrences can be objectively attributed to the most probable unit based on a subset of identified records. The objective of the algorithm is to reliably attribute species membership to a set of ambiguous records belonging to two (or more) cryptic entities based on the distribution of a subset of accurately determined records. The main idea is that records from an area where only one taxon occurs can be attributed with confidence, while records from the areas of sympatry or too far from any ascertained record cannot be reliably attributed.
-The main inputs for the functions are a matrix with longitude and latitude for all the occurrence data and a vector (in the same order) providing their identification. The  identified records must be indicated in the vector with a sequential numeric value (1, 2, …, n), which represents the verified membership to the nth unit. The occurrence data with unknown identification (unidentified records) are marked with a 0. Based on this vector and on the geographic coordinates of identified records, biodecrypt builds concave hulls of distribution for each species (ahull algorithm).
+The main inputs for the functions are a matrix with longitude and latitude (decimal longitude and latitude, WGS84) for all the occurrence data and a vector (in the same order) providing their identification. The  identified records must be indicated in the vector with a sequential numeric value (1, 2, …, n), which represents the verified membership to the nth unit. The occurrence data with unknown identification (unidentified records) are marked with a 0. Based on this vector and on the geographic coordinates of identified records, biodecrypt builds concave hulls of distribution for each species (ahull algorithm).
 After the construction of the alpha-hulls, biodecrypt attempts the attribution of unidentified records to the most likely unit. For this aim, biodecrypt also requires a buffer and a ratio value (explained below). Based on hull geometry and their relative position, each unidentified record could be either: (a) inside more than one hull, (b) inside a single hull, or (c) outside all hulls. The three cases are treated separately and referred to the figure below which represents an example of the assignment procedure based on the overlapping distributions of Polyommatus icarus (red) and Polyommatus celina (blue) in Iberia. Red and blue dots represent the sites from where specimens of the respective species have been sequenced, empty circles represent sites with unidentified records. The continuous red and blue lines represent the hulls obtained for the two species based on occurrence of sequenced specimens, the dotted blue line represents the buffer of the P. celina hull (for clarity, the buffer of the P. icarus hull is not represented). 
 
 ![](https://github.com/leondap/images/blob/main/biodecrypt_fig1.jpg?raw=true)
@@ -267,8 +267,20 @@ The unidentified records that do not fall inside any hull are attributed to the 
 2.5 Check for distances from the nearest identified record
 As described above, the attribution of unattributed records is strictly determined by the distance from the hulls. The biodecrypt function also contains an option (“checkdist”) to check if records attributed to a given species based on relative distance from hulls are closer to an identified record of another species, which may occasionally occur. If this option is selected (default) these records are not attributed to any species (record 6 in the Figure).
 
-
-
+Biodecrypt also computes the area of overlap among hulls and can exclude sea areas for terrestrial organisms and land area for marine ones based on a polygon defining them.
+Open the libraries, the map and the land polygon from natural earth
+```
+library(recluster)
+library(rworldmap)
+library(rworldxtra)
+map <- getMap(resolution = "low")
+library(rnaturalearth)
+polygon <- ne_download(scale = 10, type = "land", category = "physical", returnclass = "sf")
+```
+Open the data for the Polyommatus icarus and celina taxa
+```
+data <- read.csv("https://github.com/leondap/files/blob/4a6240b6ae48eb3afdaba47a5d6f34ad42c0aea0/Polyommatus.csv")
+```
 
 References
 
