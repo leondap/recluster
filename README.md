@@ -292,6 +292,20 @@ biodecrypt.plot(biodecrypt1, col=c("red","blue"))
 ```
 ![](https://github.com/leondap/images/blob/main/Biodecrypr_fig2.jpg?raw=true)
 
+In the resulting graph the blue and red dots are identified specimens (P. icarus and P. celina) and based of them the convex hulls were built. The cyan and pink dots are unidentified specimens attributed to P. icarus and P. celina by biodecrypt and black dots are the specimens that could not be identified by biodecrypt based on hull geometry, location and selected parameters.
+The new identification (id2) is available in 
+```
+biodecrypt1$table
+```
+A cross validation for the analysis can be obtained by the function biodecrypt.cross. This function wraps the biodecrypt function to carry out cross-validation of identified records and to verify the robustness of the attribution of unidentified records. biodecrypt.cross requires the same input of biodecrypt and a “runs” value defining the number of different runs, thus, the fraction of test records in each run. The analysis is repeated as many times as defined in “runs” (a “runs” value of 10 will perform a 10-fold cross-validation). In each run, a randomly selected fraction of 1/”runs” identified records are regarded as unidentified (0 value) and the biodecrypt function is carried out to attribute them. The blind attribution of identified records is compared with their membership and two values are provided: the percentages of cases attributed to a wrong species (misidentified records, MIR) and the percentage of cases not attributed to any species (non-attributed identified records, NIR). MIR and NIR represent measures for the power of the function to attribute records to a given species (NIR) and to avoid misidentification (MIR). The function also has an option to calculate the percentage of non-attributed unidentified records (NUR) representing the fraction of unidentified records that could not be attributed to a species by biodecrypt using the parameters provided by the user and the complete set of identified and unidentified records.
+```
+biodecrypt1_cross<-biodecrypt.cross(mat, id,alpha=c(5,5),map=map, buffer=50000, polygon=polygon)
+biodecrypt1_cross$MIR
+biodecrypt1_cross$NIR
+biodecrypt1_cross$NUR
+```
+Which means that 1.8% of identified specimens were misindentified when included as unidentified records, 8.5% of identified specimens were not attributed to any unit and a total of 2.4% of unindentified records were not attributed.
+The values of alpha, buffer and ratio can be optimised by biodecrypt.wrap that replicates the cross-validation analysis by using all possible combinations of a series of distance ratio, alpha and buffer values to compare their resulting MIR, NIR and NUR. To optimise the three parameters for each species, we introduced a combination of MIR2 + NIR + NUR as a penalty value for the different combinations of the parameters. Since the method showing the lowest penalty in cross-validation might not necessarily be the optimal value for the final analysis, all the combinations showing a penalty value not higher than a certain threshold compared with the analysis showing the lowest penalty should be considered as potentially good. We provided a value of 10% as a default, representing a variation of about 3% for each addendum of the penalty. The optimal parameters can then be calculated as mean values of distance ratio, alpha and buffer among those used in these cross-validation analyses, weighted by 1/penalty to provide an increasing contribution to the solutions with low penalty values. This is done by biodecrypt.optimise, calculating the optimal values of alpha, buffer and distance ratio based on biodecrypt.wrap results.
 
 
 ###References
