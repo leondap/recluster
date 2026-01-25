@@ -1,0 +1,44 @@
+Package: recluster
+Type: Package
+Title: Ordination Methods for the Analysis of Beta-Diversity Indices
+Version: 3.4
+Date: 2026-01-25
+Depends: R (>= 4.0.0)
+Imports:
+    alphahull,
+    ape,
+    sf,
+    sp,
+    vegan,
+    grDevices,
+    graphics,
+    stats,
+    utils,
+    phytools,
+    phangorn,
+    picante,
+    cluster,
+    plotrix
+Authors@R: c(
+    person(given = "Leonardo", family = "Dapporto",
+           role = c("aut", "cre"),
+           email = "leondap@gmail.com"),
+    person(given = "Matteo", family = "Ramazzotti",
+           role = "aut"),
+    person(given = "Simone", family = "Fattorini",
+           role = "aut"),
+    person(given = "Roger", family = "Vila",
+           role = "aut"),
+    person(given = "Gerard", family = "Talavera",
+           role = "aut"),
+    person(given = c("Roger", "H.L."), family = "Dennis",
+           role = "aut")
+    )
+Maintainer: Leonardo Dapporto <leondap@gmail.com>
+Description: The analysis of different aspects of biodiversity requires specific algorithms. For example, in regionalisation analyses, the high frequency of ties and zero values in dissimilarity matrices produced by Beta-diversity turnover produces hierarchical cluster dendrograms whose topology and bootstrap supports are affected by the order of rows in the original matrix. Moreover, visualisation of biogeographical regionalisation can be facilitated by a combination of hierarchical clustering and multi-dimensional scaling. The recluster package provides robust techniques to visualise and analyse patterns of biodiversity and to improve occurrence data for cryptic taxa.
+License: GPL (>= 2.0)
+LazyLoad: yes
+URL: https://github.com/leondap/recluster
+NeedsCompilation: no
+Encoding: UTF-8
+RoxygenNote: 7.2.3
