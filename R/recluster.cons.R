@@ -1,26 +1,62 @@
-recluster.cons <- function(mat,phylo=NULL,tr=100,p=0.5,dist="simpson", method="average", blenghts=TRUE, select=FALSE) {
-      if(data.class(mat)=="dist")
-      {distance<-mat}
-      else
-      {distance<-recluster.dist(mat,phylo,dist)}
-      sampl<-as.data.frame(cbind((1:nrow(as.matrix(distance))),rownames(as.matrix(distance))))
-      sampl2<-sampl
-      res<-NULL	
-      trees<-NULL
-      RSS<-NULL
-      for (i in 1 : tr){
-		dist1<-as.matrix(distance)		
-		sampl2<-sampl[sample(1:nrow(sampl)),]
-		dist1<-dist1[as.numeric(sampl2[,1]), as.numeric(sampl2[,1])]
-		tree<-as.phylo(hclust(as.dist(dist1),method=method))
-		if (select){RSS[[i]]<-attr(nnls.tree(as.dist(dist1), tree, rooted=T),"RSS")}
-		trees[[i]]<-tree				
-	}
-	if (select){trees[which(RSS<median(RSS))]}
-	cons<-compute.brlen(consensus(trees[1:i],p=p, check.labels=T), method="Grafen")
-	if(blenghts){cons<-nnls.tree(distance,cons, rooted=T,trace=F)}
-	res$cons<-multi2di(cons, random=T)
-	res$trees<-trees
-	res$RSS<-RSS
-	return(res)
+recluster.cons <- function(mat, phylo = NULL, tr = 100, p = 0.5,
+                           dist = "simpson", method = "average",
+                           blenghts = TRUE, select = FALSE,
+                           seed = NULL) {
+
+  if (!is.null(seed)) set.seed(seed)
+
+  # distanza
+  if (inherits(mat, "dist")) {
+    distance <- mat
+  } else {
+    distance <- recluster.dist(mat, phylo, dist)
+  }
+
+  dist_mat <- as.matrix(distance)
+  n <- nrow(dist_mat)
+  idx <- seq_len(n)
+
+  trees <- vector("list", tr)
+  RSS <- if (select) numeric(tr) else NULL
+
+  for (i in seq_len(tr)) {
+    samp <- sample(idx)
+    dist1 <- dist_mat[samp, samp]
+
+    tree <- as.phylo(hclust(as.dist(dist1), method = method))
+    trees[[i]] <- tree
+
+    if (select) {
+      RSS[i] <- attr(
+        nnls.tree(as.dist(dist1), tree, rooted = TRUE),
+        "RSS"
+      )
+    }
+  }
+
+  if (select) {
+    keep <- RSS < median(RSS, na.rm = TRUE)
+    trees <- trees[keep]
+    RSS <- RSS[keep]
+  }
+
+  cons <- compute.brlen(
+    consensus(trees, p = p, check.labels = TRUE),
+    method = "Grafen"
+  )
+
+  if (blenghts) {
+    cons <- tryCatch(
+      nnls.tree(distance, cons, rooted = TRUE, trace = FALSE),
+      error = function(e) cons
+    )
+  }
+
+  res <- list(
+    cons = multi2di(cons, random = TRUE),
+    trees = trees,
+    RSS = RSS
+  )
+
+  return(res)
 }
