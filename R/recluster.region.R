@@ -74,23 +74,25 @@ matrices <- array(NA_real_, dim = c(rows, rows, clusters),
                           dimnames = list(NULL, c("k", "silh", "ex.diss")))
   res$solutions[, "k"] <- seq(mincl, maxcl)
 
-  for (pamr in seq_len(clusters)) {
-    k <- mincl - 1 + pamr
-    if (method == "pam") {
-      pamsol[, pamr] <- cluster::pam(as.dist(matrices[, , pamr]), k = k)$clustering
-    } else {
-      pami <- hclust(as.dist(matrices[, , pamr]), method = method)
-      pamsol[, pamr] <- cutree(pami, k = k)
-      if (rettree) {
-        if (is.null(res$tree)) res$tree <- list()
-        res$tree[[pamr]] <- pami
-      }
-    }
-    res$solutions[pamr, "ex.diss"] <- recluster.expl(distam, pamsol[, pamr])
-    sil <- cluster::silhouette(pamsol[, pamr], dist = distam)
-    res$solutions[pamr, "silh"] <- mean(sil[, 3], na.rm = TRUE)
+  for (pamr in 1:clusters) {
+
+  if (method == "pam") {
+    pamsol[,pamr] <- pam(as.dist(matrices[,,pamr]), k = mincl - 1 + pamr)$clustering
+
+  } else if (method == "diana") {
+    pami <- diana(as.dist(matrices[,,pamr]))
+    pamsol[,pamr] <- cutree(as.hclust(pami), k = mincl - 1 + pamr)
+    if (rettree) res$tree[[pamr]] <- pami
+
+  } else {
+    pami <- hclust(as.dist(matrices[,,pamr]), method = method)
+    pamsol[,pamr] <- cutree(pami, k = mincl - 1 + pamr)
+    if (rettree) res$tree[[pamr]] <- pami
   }
 
-  res$grouping <- pamsol
+  res$solutions[pamr,3] <- recluster.expl(distam, pamsol[,pamr])
+  res$solutions[pamr,2] <- mean(cluster::silhouette(pamsol[,pamr], dist = distam)[,3])
+}
+res$grouping <- pamsol
   return(res)
 }
