@@ -59,7 +59,6 @@ matrices <- array(NA_real_, dim = c(rows, rows, clusters),
   for (sel in seq_len(clusters)) {
     tabsel <- tab2[, , sel, drop = FALSE]
     tabsel_df <- as.data.frame(tabsel, stringsAsFactors = TRUE)
-    # conversione in factor colonna per colonna (già factors ma ripeto in sicurezza)
     tabsel_df[] <- lapply(tabsel_df, function(x) factor(x, levels = unique(x)))
     matrices[, , sel] <- as.matrix(cluster::daisy(tabsel_df, metric = "gower"))
   }
