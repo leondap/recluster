@@ -271,10 +271,8 @@ Biodecrypt also computes the area of overlap among hulls and can exclude sea are
 Open the libraries, the map and the land polygon from natural earth
 ```
 library(recluster)
-library(rworldmap)
-library(rworldxtra)
-map <- getMap(resolution = "low")
 library(rnaturalearth)
+map <- ne_countries(scale = "medium", returnclass = "sf")
 polygon <- ne_download(scale = 10, type = "land", category = "physical", returnclass = "sf")
 ```
 Open the data for the Polyommatus icarus and celina taxa and obtain the matrix of coordinates (mat) and the id vector (id)
@@ -286,7 +284,7 @@ id<-data[,3]
 Run a biodecrypt analysis with alpha=5 for both species and buffer=50000 metres
 ```
 biodecrypt1<-biodecrypt(mat, id,alpha=c(5,5),map=map, buffer=50000, polygon=polygon)
-plot(map, xlim=range(mat[,1]),ylim=range(mat[,2]))
+plot(st_geometry(map), xlim=range(mat[,1]), ylim=range(mat[,2]))
 biodecrypt.plot(biodecrypt1, col=c("red","blue"))
 
 ```
