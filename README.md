@@ -14,8 +14,11 @@ Platania L., Menchetti M., Dinca V., Corbella C., Kay-Lavelle I., Vila R., Wieme
 
 To install recluster use:
 ```
-install.packages("remotes")
+#Install from CRAN
+install.packages ("recluster")
 
+#Install from GitHub
+install.packages("remotes")
 remotes::install_github("leondap/recluster")
 ```
 
