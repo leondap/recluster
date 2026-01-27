@@ -1,4 +1,4 @@
-![](logo.png)
+![](logo.png) 
 
 ## <b>Ordination Methods for the Analysis of Species Diversity </b>
 
