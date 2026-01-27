@@ -186,11 +186,10 @@ recluster.plot.col(new_colours_sim$aggr,text=F,cex=2)
 
 Now the areas with their colours can be plotted in a map by using recluster.plot.pie function together with a map. The very low square value avoid that areas are merged in pies.
 ```
-library(rworldmap)
-library(rworldxtra)
-map <- getMap(resolution = "high")
+library(rnaturalearth)
+map <- ne_countries(scale = "medium", returnclass = "sf")
 recluster.plot.pie(longitude,latitude,mat=new_colours_sim$all,square=0.001,minsize=0.3,xlab="Longitude", ylab="Latitude")
-plot(map, add=T)
+plot(st_geometry(map), add=T)
 ```
 ![](https://github.com/leondap/images/blob/main/map%20final%203.png?raw=true)
 
