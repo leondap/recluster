@@ -1,199 +1,281 @@
-biodecrypt<-function (mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, polygon = NULL, 
-    checkdist = T, minimum = 7, plot = F, map = NULL, xlim = NULL, 
-    ylim = NULL, main = NULL) 
-{
-    res <- NULL
-	alphaused<-NULL
-    res$type <- "sep"
-    borders <- NULL
-    taxa <- length(which(unique(id)>0))
-    colnames(mat) <- c("Long", "Lat")
-	usenondupl<-which(!(duplicated(cbind(mat,id))))
-	mat<-mat[usenondupl,]
-	id<-id[usenondupl]
-	matpunti<-st_as_sf(as.data.frame(mat),coords = c("Long","Lat"), crs = 4326)
-    distances <- matrix(0, nrow(mat), taxa)
-    distances2 <- matrix(0, nrow(mat), taxa)
-    if (is.null(alpha)) {
-        alpha = rep(10, taxa)
-    }
-	if (length(alpha)==1) {
-	alph<-alpha
-        alpha = rep(alph, taxa)
-    }
+biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000, 
+                       polygon = NULL, checkdist = TRUE, minimum = 7, 
+                       plot = FALSE, map = NULL, xlim = NULL, ylim = NULL, 
+                       main = NULL, crs_area = NULL) {
+  
+  res <- list()
+  res$type <- "sep"
+  
+  old_s2 <- sf::sf_use_s2()
+  sf::sf_use_s2(FALSE)
+  on.exit(sf::sf_use_s2(old_s2), add = TRUE)
+  
+  oldw <- getOption("warn")
+  options(warn = -1)
+  on.exit(options(warn = oldw), add = TRUE)
+  
+  colnames(mat) <- c("Long", "Lat")
+  
+  usenondupl <- which(!(duplicated(cbind(mat, id))))
+  mat <- mat[usenondupl, , drop = FALSE]
+  id <- id[usenondupl]
+  
+  unknown <- is.na(id) | id == 0 | id == "0"
+  taxa_ids <- sort(unique(id[!unknown]))
+  taxa <- length(taxa_ids)
+  
+  if (taxa < 1) stop("No known taxa in id.")
+  
+  id_internal <- rep(0, length(id))
+  for (j in seq_along(taxa_ids)) {
+    id_internal[id == taxa_ids[j]] <- j
+  }
+  
+  names(taxa_ids) <- seq_along(taxa_ids)
+  
+  matpunti <- sf::st_as_sf(
+    as.data.frame(mat),
+    coords = c("Long", "Lat"),
+    crs = 4326
+  )
+  
+  if (!is.null(polygon)) {
+    polygon <- sf::st_transform(polygon, sf::st_crs(matpunti))
+    polygon <- sf::st_make_valid(polygon)
+  }
+  
 
-    if (is.null(xlim)) {
-        xlim <- c(min(mat[, 1]), max(mat[, 1]))
-    }
-    if (is.null(ylim)) {
-        ylim <- c(min(mat[, 2]), max(mat[, 2]))
-    }
-    if (plot) {
-        plot(cbind(xlim, ylim), type = "n", main = main)
-        if (!is.null(map)) {
-            plot(map, add = T)
-        }
-    }
-    vectab <- matrix(0, nrow(mat), taxa + 1)
-    hulls <- list()
-    hullpl <- NULL
-    areas <- NULL
-    oldw <- getOption("warn")
-    options(warn = -1)
-    for (spec in 1:taxa) {
-#spec<-1
-        taxsp <- which(id == spec)
-        hullas <- matpunti[taxsp, ]
-        if (nrow(hullas) >= minimum) {
-		hullasp<-mat[taxsp, ]
-            
-		for(increasea in alpha[spec]:20){
-		hull <- ahull(hullasp, alpha = increasea)
-            hull2 <- ah2sf(hull)
-		hulltry<- try(st_as_sf(hull2), silent = TRUE)
-            if (!(inherits(hulltry, "try-error"))) {
-		break}else{
-		}
-		}
-            hullspat<-hulltry
-		alphaused[spec]<-increasea
-            if (!(is.null(polygon))) {
-                hullspat <- st_intersection(hullspat, polygon)
-            }
-        }
-        if (nrow(hullas) < minimum) {
-            hull<-st_convex_hull(st_make_valid(st_union(hullas)))
-		hullspat<-hull
-		if (!(is.null(polygon))) {
-                hullspat <- st_intersection(hull, polygon)
-            }
-        }
-        hulls[[spec]] <- hullspat
-        hullpl[[spec]] <- hull
-        if (plot) {
-            plot(hull, add = T)
-		points(hullas)
-
-        }
-        areas[spec] <- sum(st_area(hulls[[spec]]))
-	pointin <- unlist(st_contains(hulls[[spec]], matpunti))
-        vectab[pointin, spec] <- 1
-	dist_matrix <- st_distance(matpunti , hullspat)
-		distances[,spec]  <- apply(dist_matrix, 1, min)
+  distances <- matrix(0, nrow(mat), taxa)
+  
+  if (is.null(alpha)) {
+    alpha <- rep(10, taxa)
+  }
+  
+  if (length(alpha) == 1) {
+    alpha <- rep(alpha, taxa)
+  }
+  
+  if (length(alpha) != taxa) {
+    stop("alpha must have length 1 or the same number of known taxa.")
+  }
+  
+  if (is.null(xlim)) xlim <- c(min(mat[, 1]), max(mat[, 1]))
+  if (is.null(ylim)) ylim <- c(min(mat[, 2]), max(mat[, 2]))
+  
+  if (plot) {
+    plot(cbind(xlim, ylim), type = "n", main = main)
+    if (!is.null(map)) plot(map, add = TRUE)
+  }
+  
+  vectab <- matrix(0, nrow(mat), taxa + 1)
+  hulls <- list()
+  hullpl <- list()
+  areas <- rep(NA, taxa)
+  alphaused <- rep(NA, taxa)
+  
+  for (spec in seq_len(taxa)) {
+    
+    taxsp <- which(id_internal == spec)
+    hullas <- matpunti[taxsp, ]
+    
+    if (nrow(hullas) >= minimum) {
+      
+      hullasp <- unique(mat[taxsp, , drop = FALSE])
+      hullspat <- NULL
+      hull <- NULL
+      
+      for (increasea in seq(alpha[spec], 20, by = 1)) {
         
-    }
-
-    vectab[, ncol(vectab)] <- rowSums(vectab[, 1:taxa])
-    id2 <- id
-    uncertain1 <- which(vectab[, ncol(vectab)] > 1 & id == 0)
-	#uncertain1 are those within two hulls
-    uncertain2 <- which(vectab[, ncol(vectab)] == 0 & id == 0)
-	#uncertain2 are those outside any hull
-    inside <- which(vectab[, ncol(vectab)] == 1 & id == 0)
-	#inside are those within a single hull
-    if (length(uncertain2) > 1) {
-        distancesunc <- distances[uncertain2, ]
-        order <- matrix(NA, length(uncertain2), taxa)
-        for (unc2 in 1:length(uncertain2)) {
-            wh <- uncertain2[unc2]
-            order[unc2, 1:taxa] <- c(1:taxa)[order(distancesunc[unc2, 
-                1:taxa])]
+        hulltry <- try({
+          hull_tmp <- alphahull::ahull(hullasp, alpha = increasea)
+		hull2 <- recluster:::ah2sf(hull_tmp)
+        
+          
+          hull_sf <- sf::st_as_sf(hull2)
+          sf::st_crs(hull_sf) <- sf::st_crs(matpunti)
+          hull_sf <- clean_geom(hull_sf)
+          
+          list(
+            hull = hull_tmp,
+            hullspat = hull_sf
+          )
+        }, silent = F)
+        
+        if (!inherits(hulltry, "try-error")) {
+          hull <- hulltry$hull
+          hullspat <- hulltry$hullspat
+          alphaused[spec] <- increasea
+          break
         }
-        attribution <- order[, 1]
-        for (k in 1:length(uncertain2)) {
-            dist <- distancesunc[k, ]
-            ordereddist <- dist[order(dist)]
-            if (ordereddist[2] > buffer & (ordereddist[2]/ordereddist[1]) > 
-                ratio) {
-                id2[uncertain2[k]] <- attribution[k]
-            }
-        }
+      }
+      
+      if (is.null(hullspat)) {
+        hull <- sf::st_convex_hull(sf::st_make_valid(sf::st_union(hullas)))
+        hullspat <- clean_geom(hull)
+        alphaused[spec] <- NA
+      }
+      
+    } else {
+      
+      hull <- sf::st_convex_hull(sf::st_make_valid(sf::st_union(hullas)))
+      hullspat <- clean_geom(hull)
+      alphaused[spec] <- NA
     }
-    if (length(uncertain2) == 1) {
-        distancesunc <- distances[uncertain2, ]
-        order <- matrix(NA, 1, taxa)
-        order[1, 1:taxa] <- c(1:taxa)[order(distancesunc[1:taxa])]
-        attribution <- order[, 1]
-        ordereddist <- distancesunc[order(distancesunc)]
-        if (ordereddist[2] > buffer & (ordereddist[2]/ordereddist[1]) > 
-            ratio) {
-            id2[uncertain2] <- attribution
-        }
+    
+    if (!is.null(polygon)) {
+      hullspat <- sf::st_intersection(hullspat, polygon)
+      hullspat <- clean_geom(hullspat)
     }
-    if (length(inside) > 1) {
-        distancesunc <- distances[inside, ]
-        for (k in 1:length(inside)) {
-            attr <- which(vectab[inside[k], 1:taxa] == 1)
-            diste <- distancesunc[k, ]
-            diste <- diste[-attr]
-            if (min(diste) > buffer) {
-                id2[inside[k]] <- attr
-            }
-        }
-    }
-    if (length(inside) == 1) {
-        distancesunc <- distances[inside, ]
-        attr <- which(vectab[inside, 1:taxa] == 1)
-        diste <- distancesunc[-attr]
-        if (min(diste) > buffer) {
-            id2[inside] <- attr
-        }
-    }
-    if (checkdist) {
-        check <- which(id2 > 0 & id == 0)
-        if (length(check > 0)) {
-            for (ch in 1:length(check)) {
-			#ch<-1
-                attrp <- id2[check[ch]]
-			use<-id[which(id > 0)]
-                dist1 <- st_distance(matpunti[check[ch],], matpunti[which(id > 0),])
-			mini<-which.min(dist1)
-                 if (attrp != use[mini]) {
-                  id2[check[ch]] <- 0
-                }
-            }
-        }
-    }
-    intersect <- matrix(NA, taxa, taxa)
-    sympatry <- intersect
-    for (k in 1:(taxa - 1)) {
-        for (c in (k+1):taxa) {
-            tryintersect <- try(st_intersection(hulls[[k]], hulls[[c]]), silent = TRUE)
-            if (inherits(tryintersect, "try-error")) {
-                intersect[k, c] <- 0
-                sympatry[k, c] <- 0
-                intersect[c, k] <- intersect[k, c]
-                sympatry[c, k] <- sympatry[k, c]
-            }
-            else {
-                if (!is.null(tryintersect)) {
-		intersect[k, c] <- sum(st_area(st_make_valid(tryintersect)))
-                  sympatry[k, c] <- intersect[k, c]/(areas[c] + 
-                    areas[k] - intersect[k, c])
-                  intersect[c, k] <- intersect[k, c]
-                  sympatry[c, k] <- sympatry[k, c]
-                }
-                if (is.null(tryintersect)) {
-                  intersect[k, c] <- 0
-                  sympatry[k, c] <- 0
-                  intersect[c, k] <- intersect[k, c]
-                  sympatry[c, k] <- sympatry[k, c]
-                }
-            }
-        }
-    }
-    options(warn = oldw)
-	res$areas <- areas
-    res$intersections <- intersect
-    res$sympatry <- sympatry
-    res$NUR <- (length(which(id2 == 0))/length(which(id == 0))) * 
-        100
-    res$table <- cbind(mat, id2, id)
-    res$hulls <- hulls
-    res$hullpl <- hullpl
-	res$alphaused<-alphaused
-    return(res)
+    
+    hulls[[spec]] <- hullspat
+    hullpl[[spec]] <- hull
+    
     if (plot) {
-        points(matpunti, col = id2, cex = 0.5)
+      plot(hullspat, add = TRUE)
+      points(hullas)
     }
+    
+    areas[spec] <- area_safe(hulls[[spec]])
+    
+    pointin <- unique(unlist(sf::st_contains(hulls[[spec]], matpunti)))
+    if (length(pointin) > 0) {
+      vectab[pointin, spec] <- 1
+    }
+    
+    dist_matrix <- sf::st_distance(matpunti, hullspat)
+    distances[, spec] <- apply(dist_matrix, 1, min)
+  }
+  
+  vectab[, ncol(vectab)] <- rowSums(vectab[, seq_len(taxa), drop = FALSE])
+  
+  id2_internal <- id_internal
+  
+  uncertain2 <- which(vectab[, ncol(vectab)] == 0 & id_internal == 0)
+  inside <- which(vectab[, ncol(vectab)] == 1 & id_internal == 0)
+  
+  if (length(uncertain2) > 0) {
+    
+    distancesunc <- distances[uncertain2, , drop = FALSE]
+    
+    for (k in seq_along(uncertain2)) {
+      
+      dist <- distancesunc[k, ]
+      ord <- order(dist)
+      attribution <- ord[1]
+      ordereddist <- dist[ord]
+      
+      if (length(ordereddist) > 1 &&
+          ordereddist[2] > buffer &&
+          (ordereddist[2] / ordereddist[1]) > ratio) {
+        id2_internal[uncertain2[k]] <- attribution
+      }
+    }
+  }
+  
+  if (length(inside) > 0) {
+    
+    distancesunc <- distances[inside, , drop = FALSE]
+    
+    for (k in seq_along(inside)) {
+      
+      attr <- which(vectab[inside[k], seq_len(taxa)] == 1)
+      diste <- distancesunc[k, ]
+      diste <- diste[-attr]
+      
+      if (length(diste) > 0 && min(diste) > buffer) {
+        id2_internal[inside[k]] <- attr
+      }
+    }
+  }
+  
+  if (checkdist) {
+    
+    check <- which(id2_internal > 0 & id_internal == 0)
+    
+    if (length(check) > 0) {
+      
+      known <- which(id_internal > 0)
+      use <- id_internal[known]
+      
+      for (ch in seq_along(check)) {
+        
+        attrp <- id2_internal[check[ch]]
+        
+        dist1 <- sf::st_distance(
+          matpunti[check[ch], ],
+          matpunti[known, ]
+        )
+        
+        mini <- which.min(dist1)
+        
+        if (attrp != use[mini]) {
+          id2_internal[check[ch]] <- 0
+        }
+      }
+    }
+  }
+  
+  intersect <- matrix(NA, taxa, taxa)
+  sympatry <- matrix(NA, taxa, taxa)
+  
+  if (taxa > 1) {
+    
+    for (k in 1:(taxa - 1)) {
+      for (c in (k + 1):taxa) {
+        
+        inter_area <- intersection_area_safe(hulls[[k]], hulls[[c]])
+        
+        intersect[k, c] <- inter_area
+        intersect[c, k] <- inter_area
+        
+        denom <- areas[c] + areas[k] - inter_area
+        
+        if (is.na(denom) || denom <= 0) {
+          sympatry[k, c] <- NA
+        } else {
+          sympatry[k, c] <- inter_area / denom
+        }
+        
+        sympatry[c, k] <- sympatry[k, c]
+      }
+    }
+  }
+  
+  rownames(intersect) <- colnames(intersect) <- as.character(taxa_ids)
+  rownames(sympatry) <- colnames(sympatry) <- as.character(taxa_ids)
+  names(areas) <- as.character(taxa_ids)
+  names(alphaused) <- as.character(taxa_ids)
+  names(hulls) <- as.character(taxa_ids)
+  names(hullpl) <- as.character(taxa_ids)
+  
+  id2 <- rep(NA, length(id2_internal))
+  id2[id2_internal == 0] <- if (is.character(id)) "0" else 0
+  id2[id2_internal > 0] <- as.character(taxa_ids[id2_internal[id2_internal > 0]])
+  
+  if (!is.character(id)) {
+    suppressWarnings(id2 <- as.numeric(id2))
+  }
+  
+  if (plot) {
+    points(matpunti, col = as.numeric(as.factor(id2)), cex = 0.5)
+  }
+  
+  n_unknown <- length(which(id_internal == 0))
+  
+  res$areas <- areas
+  res$intersections <- intersect
+  res$sympatry <- sympatry
+  res$NUR <- if (n_unknown > 0) {
+    length(which(id2_internal == 0)) / n_unknown * 100
+  } else {
+    NA
+  }
+  res$table <- cbind(mat, id2 = id2, id = id)
+  res$hulls <- hulls
+  res$hullpl <- hullpl
+  res$alphaused <- alphaused
+  res$taxa_ids <- taxa_ids
+  res$crs_area <- crs_area
+  res$table_internal <- cbind(mat, id2_internal = id2_internal, id_internal = id_internal)
+  return(res)
 }
