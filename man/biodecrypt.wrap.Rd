@@ -1,124 +1,164 @@
 \name{biodecrypt.wrap}
 \alias{biodecrypt.wrap}
 \title{
-Wraps the biodecrypt.cross analysis to compare the performance of biodecrypt among different parameters.
+Compare biodecrypt parameter combinations by cross-validation
 }
 \description{
-The function biodecrypt.wrap wraps the biodecrypt.cross analysis by using all possible combinations of a series of distance ratio, alpha and buffer values to compare their resulting MIR, NIR and NUR.
+\code{biodecrypt.wrap} runs \code{biodecrypt.cross} over all combinations of ratio, buffer and alpha values, returning MIR, NIR and NUR for each parameter set.
 }
 \usage{
-biodecrypt.wrap(mat,id,alpha=c(1,5,10,15),alphamat=NULL,ratio=c(2,3,4,5),
-buffer=c(0,40,80,120,160), checkdist=T, polygon=NULL, minimum=7, 
-map=NULL,xlim=NULL,ylim=NULL,main=NULL,save=T,name="res_cross.txt",runs=10)
+biodecrypt.wrap(mat, id, alpha = c(1, 5, 10, 15), alphamat = NULL,
+                ratio = c(2, 3, 4, 5),
+                buffer = c(0, 40, 80, 120, 160),
+                checkdist = TRUE, polygon = NULL, minimum = 7,
+                map = NULL, xlim = NULL, ylim = NULL, main = NULL,
+                save = TRUE, name = "res_cross.txt", runs = 10,
+                crs_area = NULL)
 }
 \arguments{
   \item{mat}{
-A matrix for longitude and latitude (in decimal degrees) for all records.
+A two-column matrix or data frame containing longitude and latitude in decimal degrees.
 }
   \item{id}{
-A vector indicating species membership of each record (in the same order of mat). Identified records are indicated with 1,2..n, unidentified records with 0.
+A vector indicating taxon membership for each record, in the same order as \code{mat}. Unidentified records must be coded as \code{0}. Identified records can be coded as consecutive integers, non-consecutive integers, or character labels.
 }
   \item{alpha}{
-A vector indicating the initial alpha values. It will be the same for all species
+Vector of initial alpha values to test. Each value is applied to all taxa, unless \code{alphamat} is provided.
 }
   \item{alphamat}{
-A matrix indicating different alpha values for different species (optional).
+Optional matrix of alpha values. Rows correspond to taxa and columns correspond to alternative alpha combinations to test.
 }
   \item{ratio}{
-The values of ratio.
+Vector of ratio values to test.
 }
   \item{buffer}{
-The values of buffer.
+Vector of buffer values to test.
 }
-
-\item{checkdist}{
-Logical, if TRUE cases attributed to a given species based on relative distance from hulls but closer to an identified record of another species are not attributed. 
+  \item{checkdist}{
+Logical. If \code{TRUE}, records attributed to a taxon but closer to an identified record of another taxon are left unattributed.
 }
   \item{polygon}{
-A SpatialPolygonsDataFrame with area of interests (ground or sea). Typically obtained from Natural Earth (https://www.naturalearthdata.com/). 
-If NULL no removal is applied
+Optional \code{sf} polygon object representing the area of interest. If \code{NULL}, no clipping is applied.
 }
-   \item{minimum}{
-The minimum number of specimens required to build alpha hulls. If the number of identified specimens is lower, convex hulls are calculated to improve procedure stability.  
+  \item{minimum}{
+Minimum number of identified records required to attempt alpha hull construction. If fewer records are available, convex hulls are used.
 }
-\item{map}{
-A map to be plotted during the procedure to show the separation progress. 
+  \item{map}{
+Optional map object to be added to plots.
 }
-\item{xlim}{
-Longitude boudaries for the map. 
+  \item{xlim}{
+Longitude limits for plotting.
 }
-\item{ylim}{
-latitude boudaries for the map. 
+  \item{ylim}{
+Latitude limits for plotting.
 }
-\item{main}{
-The name to be plotted on the graph
+  \item{main}{
+Main title for plots.
 }
-\item{save}{
-Logical, if TRUE a result table is saved after each biodecrypt.cross run
+  \item{save}{
+Logical. If \code{TRUE}, the result table is saved after each \code{biodecrypt.cross} run.
 }
-\item{name}{
-The name of the saved file
+  \item{name}{
+Name of the output file saved when \code{save = TRUE}.
 }
-\item{runs}{
-The number of runs among which the cases are randomly assigned as non-attributed records
+  \item{runs}{
+Number of cross-validation runs.
+}
+  \item{crs_area}{
+Optional coordinate reference system used for area and intersection calculations. If \code{NULL}, areas are calculated in the original coordinate reference system.
 }
 }
 \details{
- The resulting table can be passed to biodecrypt.optimise to compute the best combination of alpha, buffer and ratio.
+The resulting table can be passed to \code{biodecrypt.optimise} to select an optimal combination of alpha, buffer and ratio values.
+
+If \code{alphamat} is provided, it must have one row for each known taxon and one column for each alpha combination to test.
 }
 \value{
+A list with the following components:
+
 \item{table}{
-The result table indicating for each cross validation test the MIR, NIR and NUR values together with the used ratio, buffer and alpha values.
+A table reporting, for each parameter combination, MIR, NIR, NUR, ratio, buffer and alpha values.
+}
+\item{taxa_ids}{
+Original taxon identifiers corresponding to the internal numeric taxon codes.
+}
+\item{crs_area}{
+The CRS used for area and intersection calculations.
 }
 }
 \references{
-Platania L. et al.
-Assigning occurrence data to cryptic taxa improves climatic niche assessments: biodecrypt, a new tool tested on European butterflies. Glocal Ecology and Biogeography (2020).
+Platania L. et al. Assigning occurrence data to cryptic taxa improves climatic niche assessments: biodecrypt, a new tool tested on European butterflies. Global Ecology and Biogeography (2020).
 }
 \author{
 Leonardo Dapporto
 }
 \examples{
+mat <- rbind(
+  cbind(rnorm(n = 20, mean = 1, sd = 4),
+        rnorm(n = 20, mean = 40, sd = 3)),
+  cbind(rnorm(n = 20, mean = 7, sd = 5),
+        rnorm(n = 20, mean = 45, sd = 2))
+)
 
-# Create an example for a dataset
-mat<-rbind(cbind(rnorm(n = 20, mean = 1, sd = 4),
-rnorm(n = 20, mean = 40, sd = 3)),
-cbind(rnorm(n = 20, mean = 7, sd = 5),
-rnorm(n = 20, mean = 45, sd = 2)))
+id <- c(rep(1, 20), rep(2, 20))
+id[sample(seq_len(40))[1:10]] <- 0
 
-id<-c(rep(1,20),rep(2,20))
-id[sample(c(1:40))[1:10]]<-0
+\dontrun{
+wrap_data_fast <- biodecrypt.wrap(
+  mat, id,
+  alpha = c(1, 4),
+  ratio = 2,
+  buffer = 20,
+  runs = 2
+)
 
-\dontrun{wrap_data_fast<-biodecrypt.wrap(mat,id, alpha=c(1,4), ratio=2, 
-		buffer=20, runs=2)}
-\dontrun{parameters<-biodecrypt.optimise(wrap_data_fast$table,penalty=10)}
+parameters <- biodecrypt.optimise(wrap_data_fast$table, penalty = 10)
+parameters
+}
 
-#Make the example with default 10 runs and more values
-\dontrun{wrap_data<-biodecrypt.wrap(mat,id, alpha=c(1,4), ratio=c(2,4), 
-		buffer=c(20,50))}
-\dontrun{parameters<-biodecrypt.optimise(wrap_data$table)}
+\dontrun{
+wrap_data <- biodecrypt.wrap(
+  mat, id,
+  alpha = c(1, 4),
+  ratio = c(2, 4),
+  buffer = c(20, 50)
+)
 
-#inspect the optimised parameters
-\dontrun{parameters}
+parameters <- biodecrypt.optimise(wrap_data$table)
+parameters
+}
 
-#Use different alpha for the two species
-#alpha for first
+\dontrun{
+alpha1 <- c(1, 3)
+alpha2 <- c(1, 5)
 
-\dontrun{alpha1<-c(1,3)}
+alphamat <- cbind(alpha1, alpha2)
 
-#alpha for second
-\dontrun{alpha2<-c(1,5)}
+wrap_data <- biodecrypt.wrap(
+  mat, id,
+  alphamat = alphamat,
+  ratio = c(2, 4),
+  buffer = c(20, 50)
+)
 
-\dontrun{alphamat<-cbind(alpha1,alpha2)}
+parameters <- biodecrypt.optimise(wrap_data$table, penalty = 20)
+parameters
+}
 
-\dontrun{wrap_data<-biodecrypt.wrap(mat,id, alphamat=alphamat, 
-ratio=c(2,4), buffer=c(20,50))}
+\dontrun{
+id_char <- as.character(id)
+id_char[id == 1] <- "pippo"
+id_char[id == 2] <- "minnie"
 
-\dontrun{parameters<-biodecrypt.optimise(wrap_data$table, penalty=20)}
-
-#inspect the optimised parameters
-
-\dontrun{parameters}
-
+wrap_char <- biodecrypt.wrap(
+  mat, id_char,
+  alpha = c(1, 4),
+  ratio = 2,
+  buffer = 20,
+  runs = 2
+)
+}
 }
 \keyword{record attribution}
+\keyword{cross-validation}
+\keyword{spatial}
