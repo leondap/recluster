@@ -1,136 +1,136 @@
 \name{biodecrypt.cross}
 \alias{biodecrypt.cross}
 \title{
-Perform a cross validation analysis to test the attribution of biodecrypt on attributed
- records
+Cross-validation of biodecrypt attribution
 }
 \description{
-The function biodecrypt.cross wraps the biodecrypt function to carry out 
-cross-validation of known cases thus verifying the robustness of the attribution of 
-unknown cases. This function requires the same input of biodecrypt (coordinates and 
-vector with attribution together with values of distance ratio, buffer and alpha). 
-Moreover this function requires a "runs" value defining the number of different runs, 
-thus the fraction of test records included in each run. In each run, randomly selected 
-group of test records (actually identified to a given species) are regarded as 
-unidentified (0 value) and the biodecrypt function is carried out to attribute them.
-The analysis is repeated as often as defined in runs (a runs value of 10 will perform 
-a ten-fold cross-validation based on the initial selection of ten randomly distributed 
-subsets).
+\code{biodecrypt.cross} wraps \code{biodecrypt} to perform cross-validation on known records. In each run, a subset of records with known taxon membership is temporarily treated as unidentified and then attributed using \code{biodecrypt}. Predicted and original memberships are compared to estimate misidentification and non-identification rates.
 }
 \usage{
-biodecrypt.cross(mat,id,alpha=NULL,ratio=2.5,buffer=90, checkdist=T, minimum=7, 
-polygon=NULL, map=NULL,xlim=NULL,ylim=NULL,main=NULL,runs=10,test=T)
+biodecrypt.cross(mat, id, alpha = NULL, ratio = 2.5, buffer = 90,
+                 checkdist = TRUE, minimum = 7, polygon = NULL,
+                 map = NULL, xlim = NULL, ylim = NULL, main = NULL,
+                 runs = 10, test = TRUE, crs_area = NULL)
 }
 \arguments{
   \item{mat}{
-A matrix for longitude and latitude (in decimal degrees) for all records.
+A two-column matrix or data frame containing longitude and latitude in decimal degrees.
 }
-   \item{id}{
-A vector indicating species membership of each record (in the same order of mat). 
-Identified records are indicated with 1,2..n, unidentified records with 0.
+  \item{id}{
+A vector indicating taxon membership for each record, in the same order as \code{mat}. Unidentified records must be coded as \code{0}. Identified records can be coded as consecutive integers, non-consecutive integers, or character labels.
 }
-   \item{alpha}{
-A vector indicating an initial alpha value for each species. If NULL, the default value
- of 8 for all species is used.
+  \item{alpha}{
+Initial alpha value for each taxon. If \code{NULL}, a default value of \code{8} is used for all taxa. If a single value is provided, it is recycled for all taxa.
 }
-   \item{ratio}{
-The minimum ratio between the distance from the second distant hull compared to the 
-closest hull to allow attribution. Default 2.5 times.
+  \item{ratio}{
+Minimum ratio between the distance to the second closest hull and the distance to the closest hull required for attribution. Default is \code{2.5}.
 }
-   \item{buffer}{
-A distance buffer from hulls(in km).
+  \item{buffer}{
+Distance buffer from hulls.
+}
+  \item{checkdist}{
+Logical. If \code{TRUE}, records attributed to a taxon but closer to an identified record of another taxon are left unattributed.
+}
+  \item{minimum}{
+Minimum number of identified records required to attempt alpha hull construction. If fewer records are available, convex hulls are used.
 }
   \item{polygon}{
-A SpatialPolygonsDataFrame with area of interests (ground or sea). 
-Typically obtained from Natural Earth (https://www.naturalearthdata.com/). 
-If NULL no removal is applied
+Optional \code{sf} polygon object representing the area of interest. Hulls are intersected with this polygon before attribution and area calculations. If \code{NULL}, no clipping is applied.
 }
-   \item{checkdist}{
-Logical, if TRUE cases attributed to a given species based on relative distance from 
-hulls but closer to an identified record of another species are not attributed. 
+  \item{map}{
+Optional map object to be added to the plot.
 }
-   \item{minimum}{
-The minimum number of specimens required to build alpha hulls. If the number of 
-identified specimens is lower, convex hulls are calculated to improve procedure 
-stability.
+  \item{xlim}{
+Longitude limits for plotting.
 }
-\item{map}{
-A map to be plotted during the procedure to show the separation progress. 
+  \item{ylim}{
+Latitude limits for plotting.
 }
-\item{xlim}{
-Longitude boudaries for the map. 
+  \item{main}{
+Main title for the plot.
 }
-\item{ylim}{
-latitude boudaries for the map. 
+  \item{runs}{
+Number of cross-validation runs. A value of \code{10} performs a ten-fold cross-validation. If \code{runs} equals the number of known records, the procedure approximates a jackknife.
 }
-\item{main}{
-The name to be plotted on the graph
+  \item{test}{
+Logical. If \code{TRUE}, a full \code{biodecrypt} analysis is also performed to compute NUR and hull overlap summaries.
 }
-\item{runs}{
-The number of runs among which the cases are randomly assigned as non-attributed 
-records
-}
-\item{test}{
-A logical, if TRUE, a biodecrypt analysis is also carried out to compute NUR.
+  \item{crs_area}{
+Optional coordinate reference system used for area and intersection calculations. If \code{NULL}, areas are calculated in the original coordinate reference system. For large areas or accurate overlap estimates, users should provide a suitable projected equal-area CRS.
 }
 }
 \details{
- The procedure attributes the subsets of identified records to the test group (unknown 
-cases) as evenly as possible among runs both in terms of total number of test records and records belonging to the same original species. If the number of runs equates the number of records, then each identified record is individually attributed in a jackknife procedure. Subsequently, the attribution vector obtained is provided and compared with the original membership and two values are provided: the percentages of identified cases attributed to a wrong species (Mis-Identified Records, MIR) and the percentage of known cases not attributed to any species (Non-attributed Identified Records, NIR). The function also has an option to calculate the percentage of Non-attributed Unidentified Records (NUR) representing the fraction of unknown records that could not be attributed to a species after a typical biodecrypt analysis using the parameters provided by the user and the complete set of records. 
+The function first keeps only records with known membership. For each taxon, known records are randomly ordered and split across \code{runs}. At each run, one subset per taxon is temporarily coded as unidentified (\code{0}), and \code{biodecrypt} is used to reassign those records.
+
+The resulting predicted membership is compared with the original membership. Two summary statistics are returned: Mis-Identified Records (MIR), the percentage of known records attributed to the wrong taxon, and Non-Identified Records (NIR), the percentage of known records left unattributed.
+
+If \code{test = TRUE}, a standard \code{biodecrypt} run is also performed on the full input dataset, allowing the calculation of Non-attributed Unidentified Records (NUR), hull areas, intersections and sympatry.
 }
 \value{
+A list with the following components:
+
 \item{type}{
-"cross" an argument to be passed to biodecrypt.plot.
- }
+The string \code{"cross"}, used by \code{biodecrypt.plot}.
+}
 \item{NUR}{
-The percentage of Non-attributed Unidentified Records.
- }
+Percentage of Non-attributed Unidentified Records, returned if \code{test = TRUE}.
+}
 \item{areas}{
-The hull areas for all the species (in km squares).
- }
+Hull areas for all taxa, returned if \code{test = TRUE}. Units depend on the CRS used for area calculation.
+}
 \item{intersections}{
-The areas of intersections among hulls for each pair of species.
- }
+Matrix of pairwise intersection areas among hulls, returned if \code{test = TRUE}.
+}
 \item{sympatry}{
-The fraction of the overlap area compared to the total area of the two hulls.
- }
+Matrix of pairwise overlap values, returned if \code{test = TRUE}.
+}
 \item{table}{
-The result table of the test (if test=TRUE) with Longitude and Latitude for each 
-occurrence datum, its id after the biodecrypt procedure (id2) and its initial id (id).
- }
+Result table from the full \code{biodecrypt} analysis, returned if \code{test = TRUE}.
+}
 \item{cross}{
-The result table with the original attribution (original), the attribution obtained 
-after cross validation (predicted) and the classification as MIR or NIR. Longitude and 
-Latitude are also provided.
- }
+Cross-validation table with original membership, predicted membership, MIR/NIR flags, longitude and latitude.
+}
 \item{MIR}{
-The percentage of Mis-Identified Records.
- }
+Percentage of Mis-Identified Records.
+}
 \item{NIR}{
-The percentage of Non-Identified Records.
- }
+Percentage of Non-Identified Records.
+}
+\item{taxa_ids}{
+Original taxon identifiers corresponding to the internal numeric taxon codes.
+}
 }
 \references{
-Platania L. et al.
-Assigning occurrence data to cryptic taxa improves climatic niche assessments: 
-biodecrypt, a new tool tested on European butterflies. Glocal Ecology and Biogeography 
-(2020).
+Platania L. et al. Assigning occurrence data to cryptic taxa improves climatic niche assessments: biodecrypt, a new tool tested on European butterflies. Global Ecology and Biogeography (2020).
 }
 \author{
 Leonardo Dapporto
 }
 \examples{
+mat <- rbind(
+  cbind(rnorm(n = 20, mean = 1, sd = 4),
+        rnorm(n = 20, mean = 40, sd = 3)),
+  cbind(rnorm(n = 20, mean = 7, sd = 5),
+        rnorm(n = 20, mean = 45, sd = 2))
+)
 
-## Create an example for a dataset
+id <- c(rep(1, 20), rep(2, 20))
+id[sample(seq_len(40))[1:10]] <- 0
 
-mat<-rbind(cbind(rnorm(n = 20, mean = 1, sd = 4),rnorm(n = 20, mean = 40, sd = 3)),
-cbind(rnorm(n = 20, mean = 7, sd = 5),rnorm(n = 20, mean = 45, sd = 2)))
+cross <- biodecrypt.cross(mat, id)
 
-id<-c(rep(1,20),rep(2,20))
-id[sample(c(1:40))[1:10]]<-0
-
-cross<-biodecrypt.cross(mat,id)
-plot(mat,type="n")
+plot(mat, type = "n")
 biodecrypt.plot(cross)
+
+id_char <- as.character(id)
+id_char[id == 1] <- "pippo"
+id_char[id == 2] <- "minnie"
+
+cross_char <- biodecrypt.cross(mat, id_char)
+
+plot(mat, type = "n")
+biodecrypt.plot(cross_char)
 }
 \keyword{record attribution}
+\keyword{cross-validation}
+\keyword{spatial}
