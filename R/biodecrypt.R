@@ -113,20 +113,20 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
       
       if (is.null(hullspat)) {
         hull <- sf::st_convex_hull(sf::st_make_valid(sf::st_union(hullas)))
-        hullspat <- clean_geom(hull)
+        hullspat <- .recluster_clean_geom(hull, crs_ref = crs_ref)
         alphaused[spec] <- NA
       }
       
     } else {
       
       hull <- sf::st_convex_hull(sf::st_make_valid(sf::st_union(hullas)))
-      hullspat <- clean_geom(hull)
+      hullspat <- .recluster_clean_geom(hull, crs_ref = crs_ref)
       alphaused[spec] <- NA
     }
     
     if (!is.null(polygon)) {
       hullspat <- sf::st_intersection(hullspat, polygon)
-      hullspat <- clean_geom(hullspat)
+      hullspat <- .recluster_clean_geom(hullspat, crs_ref = crs_ref)
     }
     
     hulls[[spec]] <- hullspat
