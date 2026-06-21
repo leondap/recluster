@@ -1,4 +1,4 @@
-recluster_clean_geom <- function(x, crs_ref) {
+.recluster_clean_geom <- function(x, crs_ref) {
   
   x <- sf::st_make_valid(x)
   sf::st_crs(x) <- crs_ref
