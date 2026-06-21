@@ -87,10 +87,10 @@ biodecrypt.wrap <- function(
         res_cross[riga, 4] <- ratio[ratiov]
         res_cross[riga, 5] <- buffer[bufferv]
         if (is.null(alphamat)) {
-  res_cross[riga, 6] <- alpha[alphav]
-} else {
-  res_cross[riga, 6:ncol(res_cross)] <- alphause
-}
+          res_cross[riga, 6] <- alpha[alphav]
+        } else {
+         res_cross[riga, 6:ncol(res_cross)] <- alphause
+        }
         
         if (save) {
           write.table(
