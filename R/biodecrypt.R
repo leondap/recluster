@@ -38,7 +38,9 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
     coords = c("Long", "Lat"),
     crs = 4326
   )
-  
+	
+  crs_ref <- sf::st_crs(matpunti)
+	
   if (!is.null(polygon)) {
     polygon <- sf::st_transform(polygon, sf::st_crs(matpunti))
     polygon <- sf::st_make_valid(polygon)
@@ -93,8 +95,8 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
           
           hull_sf <- sf::st_as_sf(hull2)
           sf::st_crs(hull_sf) <- sf::st_crs(matpunti)
-          hull_sf <- clean_geom(hull_sf)
-          
+          hull_sf <- .recluster_clean_geom(hull_sf, crs_ref = crs_ref)
+      
           list(
             hull = hull_tmp,
             hullspat = hull_sf
@@ -135,7 +137,11 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
       points(hullas)
     }
     
-    areas[spec] <- area_safe(hulls[[spec]])
+    areas[spec] <- .recluster_area_safe(
+  hulls[[spec]],
+  crs_ref = crs_ref,
+  crs_area = crs_area
+   )
     
     pointin <- unique(unlist(sf::st_contains(hulls[[spec]], matpunti)))
     if (length(pointin) > 0) {
@@ -223,7 +229,12 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
     for (k in 1:(taxa - 1)) {
       for (c in (k + 1):taxa) {
         
-        inter_area <- intersection_area_safe(hulls[[k]], hulls[[c]])
+        inter_area <- .recluster_intersection_area_safe(
+  hulls[[k]],
+  hulls[[c]],
+  crs_ref = crs_ref,
+  crs_area = crs_area
+)
         
         intersect[k, c] <- inter_area
         intersect[c, k] <- inter_area
