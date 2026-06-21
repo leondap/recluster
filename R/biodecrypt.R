@@ -101,7 +101,7 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
             hull = hull_tmp,
             hullspat = hull_sf
           )
-        }, silent = F)
+        }, silent = T)
         
         if (!inherits(hulltry, "try-error")) {
           hull <- hulltry$hull
