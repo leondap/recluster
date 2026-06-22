@@ -223,6 +223,7 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
   
   intersect <- matrix(NA, taxa, taxa)
   sympatry <- matrix(NA, taxa, taxa)
+  mindist <- matrix(NA, taxa, taxa)
   
   if (taxa > 1) {
     
@@ -248,12 +249,26 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
         }
         
         sympatry[c, k] <- sympatry[k, c]
+
+ 	dist_hulls <- sf::st_distance(hulls[[k]], hulls[[c]])
+      min_dist <- suppressWarnings(min(as.numeric(dist_hulls), na.rm = TRUE))
+      
+      if (is.infinite(min_dist)) min_dist <- NA
+      
+      mindist[k, c] <- min_dist
+      mindist[c, k] <- min_dist
+
+
+
+
       }
     }
   }
   
   rownames(intersect) <- colnames(intersect) <- as.character(taxa_ids)
   rownames(sympatry) <- colnames(sympatry) <- as.character(taxa_ids)
+rownames(mindist) <- colnames(mindist) <- as.character(taxa_ids)
+diag(mindist) <- 0
   names(areas) <- as.character(taxa_ids)
   names(alphaused) <- as.character(taxa_ids)
   names(hulls) <- as.character(taxa_ids)
@@ -276,6 +291,7 @@ biodecrypt <- function(mat, id, alpha = NULL, ratio = 2.5, buffer = 90000,
   res$areas <- areas
   res$intersections <- intersect
   res$sympatry <- sympatry
+res$mindist <- mindist
   res$NUR <- if (n_unknown > 0) {
     length(which(id2_internal == 0)) / n_unknown * 100
   } else {
