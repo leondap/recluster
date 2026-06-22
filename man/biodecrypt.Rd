@@ -113,6 +113,9 @@ Matrix of pairwise intersection areas among hulls.
 \item{sympatry}{
 Matrix of pairwise overlap values, calculated as intersection area divided by union area.
 }
+\item{mindist}{
+Matrix of pairwise minimum distances (in km) among hulls.
+}
 \item{NUR}{
 Percentage of Non-attributed Unidentified Records.
 }
